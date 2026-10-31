@@ -88,7 +88,11 @@ function render(node) {
   if (node.phone && node.phone.length) {
     void phoneBox.offsetWidth;
     phoneBox.classList.add('shake');
-    if (window.GameAudio) GameAudio.sfx(node.id === 'N02' ? 'ring' : 'message');
+    try {
+      if (window.GameAudio) GameAudio.sfx(node.id === 'N02' ? 'ring' : 'message');
+    } catch (error) {
+      console.warn('phone sfx failed', error);
+    }
   }
 
   $('#choices').replaceChildren();
@@ -143,7 +147,11 @@ function showReview(review) {
   screen('end');
   bg('end');
   if (window.GameAudio) {
-    GameAudio.sfx(['危险', '高风险', '警示'].indexOf(review.rating) !== -1 ? 'bad' : 'good');
+    try {
+      GameAudio.sfx(['危险', '高风险', '警示'].indexOf(review.rating) !== -1 ? 'bad' : 'good');
+    } catch (error) {
+      console.warn('review sfx failed', error);
+    }
   }
   setText($('#endingTitle'), review.title);
   setText($('#rating'), `${review.ending_id} · ${review.rating}`);
@@ -165,12 +173,23 @@ function startSession() {
   if (busy || !ready) return;
   setBusy(true);
   if (window.GameAudio) {
-    GameAudio.unlock();
-    GameAudio.sfx('click');
+    try {
+      GameAudio.unlock();
+      GameAudio.sfx('click');
+    } catch (error) {
+      /* audio must never block the story */
+      console.warn('audio start failed', error);
+    }
   }
   flags = {};
   history = [];
-  render(nodeById('N01'));
+  try {
+    render(nodeById('N01'));
+  } catch (error) {
+    console.error(error);
+    setBusy(false);
+    toast(`启动失败：${error.message}`);
+  }
 }
 
 function finish(endingId) {
@@ -182,8 +201,12 @@ function choose(option) {
   if (busy || !activeNode) return;
   setBusy(true);
   if (window.GameAudio) {
-    GameAudio.sfx('click');
-    if (/支付|转账|付款|购买/.test(option.text || '')) GameAudio.sfx('pay');
+    try {
+      GameAudio.sfx('click');
+      if (/支付|转账|付款|购买/.test(option.text || '')) GameAudio.sfx('pay');
+    } catch (error) {
+      console.warn('choice sfx failed', error);
+    }
   }
   try {
     const applied = StaticEngine.applyChoice(config, flags, activeNode.id, option.id);
@@ -205,7 +228,11 @@ function submitFreeAnswer() {
     return;
   }
   setBusy(true);
-  if (window.GameAudio) GameAudio.sfx('click');
+  try {
+    if (window.GameAudio) GameAudio.sfx('click');
+  } catch (error) {
+    console.warn('answer sfx failed', error);
+  }
   try {
     const applied = StaticEngine.applyFreeAnswer(config, flags, activeNode.id, text);
     if (!applied) {
@@ -247,6 +274,9 @@ async function boot() {
     screen('cover');
     setBusy(false);
     setText($('#status'), '规则引擎已就绪，点击进入故事');
+    if (new URLSearchParams(location.search).get('autostart') === '1') {
+      setTimeout(startSession, 300);
+    }
   } catch (error) {
     setBusy(false);
     toast(`加载剧情配置失败：${error.message}`);
