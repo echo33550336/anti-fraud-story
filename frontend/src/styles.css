@@ -2,7 +2,9 @@
 
 /* ---- story effects + audio toggle (added 2026-10-31) ---- */
 #backNext{opacity:0}
-.sound-toggle{position:fixed;right:16px;bottom:16px;z-index:50;border:1px solid #ffc77466;background:#111327d9;color:#ffe0a5;border-radius:22px;padding:8px 13px;font-size:12px;letter-spacing:.04em;backdrop-filter:blur(8px);cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.sound-toggle{display:inline-block;border:1px solid #ffc77466;background:#111327d9;color:#ffe0a5;border-radius:22px;padding:8px 13px;font-size:12px;letter-spacing:.04em;backdrop-filter:blur(8px);cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.sound-toggle-fixed{position:fixed;right:16px;bottom:16px;z-index:50}
+.sound-toggle-cover{margin-top:14px}
 .sound-toggle:hover{background:#2a2340e6;transform:translateY(-1px)}
 .sound-toggle.is-off{color:#ffffff88;border-color:#ffffff22}
 @keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
