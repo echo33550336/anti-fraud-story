@@ -91,7 +91,11 @@ function render(node, progress) {
   if (node.phone && node.phone.length) {
     void phoneBox.offsetWidth;
     phoneBox.classList.add('shake');
-    if (window.GameAudio) GameAudio.sfx(node.id === 'N02' ? 'ring' : 'message');
+    try {
+      if (window.GameAudio) GameAudio.sfx(node.id === 'N02' ? 'ring' : 'message');
+    } catch (error) {
+      console.warn('phone sfx failed', error);
+    }
   }
 
   $('#choices').replaceChildren();
@@ -141,7 +145,11 @@ function showReview(review) {
   screen('end');
   bg('end');
   if (window.GameAudio) {
-    GameAudio.sfx(['危险', '高风险', '警示'].indexOf(review.rating) !== -1 ? 'bad' : 'good');
+    try {
+      GameAudio.sfx(['危险', '高风险', '警示'].indexOf(review.rating) !== -1 ? 'bad' : 'good');
+    } catch (error) {
+      console.warn('review sfx failed', error);
+    }
   }
   setText($('#endingTitle'), review.title);
   setText($('#rating'), `${review.ending_id} · ${review.rating}`);
@@ -163,8 +171,12 @@ async function startSession() {
   if (busy) return;
   setBusy(true);
   if (window.GameAudio) {
-    GameAudio.unlock();
-    GameAudio.sfx('click');
+    try {
+      GameAudio.unlock();
+      GameAudio.sfx('click');
+    } catch (error) {
+      console.warn('audio start failed', error);
+    }
   }
   try {
     const result = await post('/api/story/start', {});
@@ -180,8 +192,12 @@ async function choose(option) {
   if (busy || !sessionId || !activeNode) return;
   setBusy(true);
   if (window.GameAudio) {
-    GameAudio.sfx('click');
-    if (/支付|转账|付款|购买/.test(option.text || '')) GameAudio.sfx('pay');
+    try {
+      GameAudio.sfx('click');
+      if (/支付|转账|付款|购买/.test(option.text || '')) GameAudio.sfx('pay');
+    } catch (error) {
+      console.warn('choice sfx failed', error);
+    }
   }
   try {
     const result = await post('/api/story/answer', {
@@ -205,7 +221,11 @@ async function submitFreeAnswer() {
     return;
   }
   setBusy(true);
-  if (window.GameAudio) GameAudio.sfx('click');
+  try {
+    if (window.GameAudio) GameAudio.sfx('click');
+  } catch (error) {
+    console.warn('answer sfx failed', error);
+  }
   try {
     const result = await post('/api/story/open', {
       session_id: sessionId,
