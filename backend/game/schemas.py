@@ -7,8 +7,6 @@ NODE_IDS = tuple("N%02d" % i for i in range(1, 16))
 ENDING_IDS = tuple(
     ["R%02d" % i for i in range(1, 15)] + ["P01", "P02"]
 )
-GRAPH_MODEL = "frontend_graph_v1"
-FRONTEND_ENDING_IDS = tuple("E%02d" % i for i in range(1, 17))
 BADGE_IDS = (
     "independent_check",
     "authorization_guardian",
@@ -143,145 +141,6 @@ def _validate_ending_condition(condition: Any, path: str, errors: List[str]) -> 
             errors.append("%s: invalid choice comparison for %s" % (path, field))
 
 
-def _validate_frontend_graph(config: Mapping[str, Any]) -> List[str]:
-    """Validate the additive graph format that mirrors the bundled frontend."""
-    errors: List[str] = []
-    meta = config.get("meta")
-    if not isinstance(meta, dict):
-        return ["meta: expected an object"]
-    if not isinstance(meta.get("title"), str) or not meta.get("title"):
-        errors.append("meta.title: expected a non-empty string")
-
-    nodes = config.get("nodes")
-    if not isinstance(nodes, list) or len(nodes) != 15:
-        return errors + ["nodes: expected 15 graph nodes"]
-    node_map: Dict[str, Dict[str, Any]] = {}
-    for index, node in enumerate(nodes):
-        path = "nodes[%d]" % index
-        expected_id = "N%02d" % (index + 1)
-        if not isinstance(node, dict):
-            errors.append("%s: expected an object" % path)
-            continue
-        node_id = node.get("id")
-        if node_id != expected_id:
-            errors.append("%s.id: expected %s in fixed order" % (path, expected_id))
-        if isinstance(node_id, str) and node_id in node_map:
-            errors.append("%s.id: duplicate %s" % (path, node_id))
-        if isinstance(node_id, str):
-            node_map[node_id] = node
-        for field in ("title", "time", "speaker", "text", "prompt"):
-            if not isinstance(node.get(field), str) or not node.get(field):
-                errors.append("%s.%s: expected a non-empty string" % (path, field))
-        if not isinstance(node.get("free"), bool):
-            errors.append("%s.free: expected a boolean" % path)
-        for field in ("phone",):
-            value = node.get(field, [])
-            if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
-                errors.append("%s.%s: expected a list of strings" % (path, field))
-        if node.get("prop") is not None and not isinstance(node.get("prop"), str):
-            errors.append("%s.prop: expected a string or null" % path)
-
-        options = node.get("options")
-        if not isinstance(options, list):
-            errors.append("%s.options: expected a list" % path)
-            options = []
-        is_free = node.get("free") is True
-        if is_free and options:
-            errors.append("%s.options: free-answer nodes must not define fixed options" % path)
-        if not is_free and len(options) not in (2, 3):
-            errors.append("%s.options: expected 2 or 3 options" % path)
-        option_ids: Set[str] = set()
-        for option_index, option in enumerate(options):
-            opath = "%s.options[%d]" % (path, option_index)
-            if not isinstance(option, dict):
-                errors.append("%s: expected an object" % opath)
-                continue
-            option_id = option.get("id")
-            if option_id not in ("A", "B", "C"):
-                errors.append("%s.id: expected A, B, or C" % opath)
-            elif option_id in option_ids:
-                errors.append("%s.id: duplicate %s" % (opath, option_id))
-            else:
-                option_ids.add(option_id)
-            for field in ("text", "target"):
-                if not isinstance(option.get(field), str) or not option.get(field):
-                    errors.append("%s.%s: expected a non-empty string" % (opath, field))
-            if "response" in option and not isinstance(option.get("response"), str):
-                errors.append("%s.response: expected a string" % opath)
-            conditional = option.get("conditional_targets", [])
-            if not isinstance(conditional, list):
-                errors.append("%s.conditional_targets: expected a list" % opath)
-                conditional = []
-            for target in [option.get("target")] + [
-                item.get("target") for item in conditional if isinstance(item, dict)
-            ]:
-                if isinstance(target, str) and not (
-                    target in {"N%02d" % i for i in range(1, 16)}
-                    or target in FRONTEND_ENDING_IDS
-                ):
-                    errors.append("%s: unknown target %r" % (opath, target))
-            for cond_index, item in enumerate(conditional):
-                cpath = "%s.conditional_targets[%d]" % (opath, cond_index)
-                if not isinstance(item, dict) or not isinstance(item.get("when"), dict):
-                    errors.append("%s: expected an object with when and target" % cpath)
-                elif not item.get("when"):
-                    errors.append("%s.when: expected a non-empty object" % cpath)
-                if not isinstance(item, dict) or not isinstance(item.get("target"), str):
-                    errors.append("%s.target: expected a string" % cpath)
-            increments = option.get("increments", {})
-            if not isinstance(increments, dict):
-                errors.append("%s.increments: expected an object" % opath)
-            else:
-                for key, amount in increments.items():
-                    if key not in {"ticket_paid", "second_paid", "small_paid", "invest_paid"}:
-                        errors.append("%s.increments: unknown payment field %s" % (opath, key))
-                    if not _is_integer(amount) or amount < 0:
-                        errors.append("%s.increments.%s: expected a non-negative integer" % (opath, key))
-        order = node.get("ui_option_order")
-        if order is not None and (not isinstance(order, list) or order != [o.get("id") for o in options if isinstance(o, dict)]):
-            errors.append("%s.ui_option_order: must match option IDs in display order" % path)
-
-        free_answer = node.get("free_answer")
-        if is_free:
-            if not isinstance(free_answer, dict) or not isinstance(free_answer.get("routes"), list) or not free_answer["routes"]:
-                errors.append("%s.free_answer.routes: expected a non-empty list" % path)
-            else:
-                for route_index, route in enumerate(free_answer["routes"]):
-                    rpath = "%s.free_answer.routes[%d]" % (path, route_index)
-                    if not isinstance(route, dict):
-                        errors.append("%s: expected an object" % rpath)
-                        continue
-                    if not isinstance(route.get("target"), str) or route.get("target") not in set(FRONTEND_ENDING_IDS) | {"N%02d" % i for i in range(1, 16)}:
-                        errors.append("%s.target: unknown graph target" % rpath)
-                    for field in ("any_keywords", "all_keywords", "none_keywords"):
-                        if field in route and (not isinstance(route[field], list) or any(not isinstance(x, str) or not x for x in route[field])):
-                            errors.append("%s.%s: expected a list of non-empty strings" % (rpath, field))
-        elif free_answer is not None:
-            errors.append("%s.free_answer: only free-answer nodes may define routes" % path)
-
-    endings = config.get("endings")
-    if not isinstance(endings, list) or len(endings) != 16:
-        errors.append("endings: expected 16 frontend endings")
-        endings = []
-    ending_ids: List[str] = []
-    for index, ending in enumerate(endings):
-        path = "endings[%d]" % index
-        if not isinstance(ending, dict):
-            errors.append("%s: expected an object" % path)
-            continue
-        ending_id = ending.get("id")
-        if isinstance(ending_id, str):
-            ending_ids.append(ending_id)
-        if ending_id != "E%02d" % (index + 1):
-            errors.append("%s.id: expected E%02d in fixed order" % (path, index + 1))
-        for field in ("title", "rating", "narration", "note"):
-            if not isinstance(ending.get(field), str) or not ending.get(field):
-                errors.append("%s.%s: expected a non-empty string" % (path, field))
-    if set(ending_ids) != set(FRONTEND_ENDING_IDS):
-        errors.append("endings: IDs must cover E01 through E16 exactly once")
-    return errors
-
-
 def validate_config(config: Any) -> List[str]:
     """Return all detectable config errors without mutating the input."""
     errors = []
@@ -292,8 +151,6 @@ def validate_config(config: Any) -> List[str]:
     if not isinstance(meta, dict):
         errors.append("meta: expected an object")
         meta = {}
-    elif meta.get("model") == GRAPH_MODEL:
-        return _validate_frontend_graph(config)
 
     score = meta.get("score")
     if not isinstance(score, dict):

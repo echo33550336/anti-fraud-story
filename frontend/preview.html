@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>终场前的一张票 · 设计预览</title><link rel="stylesheet" href="src/styles.css">
+<style>
+.preview-nav{position:fixed;z-index:20;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;
+  max-width:calc(100vw - 20px);overflow:auto;border:1px solid #f0c78c88;border-radius:999px;
+  background:#17162be9;box-shadow:0 10px 30px #0008;backdrop-filter:blur(16px)}
+.preview-nav button{white-space:nowrap;border:0;border-radius:99px;background:transparent;color:#e8d8c9;padding:7px 12px;font-size:11px}
+.preview-nav button.active{background:#f2c889;color:#23182c;font-weight:700}
+.preview-mark{position:fixed;z-index:21;bottom:12px;right:16px;color:#f8dcbbad;font-size:10px;letter-spacing:.08em}
+.cover-box{margin-top:30px}.game .top{padding-top:34px;height:92px}
+.preview-choice.selected{border-color:#ffe0a8;background:#a5648eaa;box-shadow:0 0 24px #efa86955}
+.preview-hint{font-size:11px;color:#f5d8b1aa;margin:9px 0 0}
+.preview-portrait.muted{filter:brightness(.78) saturate(.7)}
+.preview-portrait.speaking{filter:brightness(1.08) saturate(1.05)}
+@media(max-width:700px){.preview-nav{top:5px}.preview-nav button{font-size:9px;padding:6px 8px}.game .top{padding-top:45px;min-height:94px;height:auto}.preview-mark{font-size:8px}}
+</style></head><body>
+<div class="app"><div id="back" class="back"></div><div class="shade"></div>
+<nav class="preview-nav" aria-label="页面预览切换">
+  <button data-view="cover">封面</button><button data-view="N02">陌生来电</button><button data-view="N08">假熟人</button>
+  <button data-view="N15">自由回答</button><button data-view="end">结算</button>
+</nav>
+<section id="cover" class="screen cover"><div class="cover-box">
+  <div class="kicker">HALLOWEEN · INTERACTIVE ANTI-FRAUD STORY</div>
+  <h1>终场前的一张票</h1><div class="pill">15 个节点 · 16 个结局</div>
+  <p>一张真正的员工赠票，两个掌握细节的可疑联系人。<br>从陌生来电到“老同学”的请求，林夏需要一次次决定相信谁。</p>
+  <button id="start" class="start">预览对话页　→</button><div class="hint">视觉与交互状态预览 · 不连接后端</div>
+</div></section>
+<section id="game" class="screen game hidden"><header class="top"><div class="brand">终场前的一张票</div>
+  <div class="meta"><span id="progressLabel"></span><div class="meter"><b id="progressBar"></b></div><span>分镜预览</span></div></header>
+  <div class="stage"><figure id="portrait" class="portrait preview-portrait"><img id="portraitImg" alt="角色立绘"><figcaption id="portraitName"></figcaption></figure>
+    <div class="scene-note"><strong id="sceneTitle"></strong><span id="sceneMeta"></span></div>
+    <div id="phone" class="phone hidden"><div id="phoneHead" class="phone-head"></div><div id="phoneBody"></div></div>
+    <img id="prop" class="prop hidden" alt="场景物品"></div>
+  <div class="dialogue-shell"><div id="speaker" class="name"></div><div id="actLabel" class="act-label"></div>
+    <div id="beatCount" class="beat-count"></div><div id="narrative" class="narrative" aria-live="polite"></div>
+    <div id="beatCtl" class="beat-ctl"><button id="skipBeats">跳到选项</button><button id="nextBeat">继续 ▸</button></div>
+    <div class="interact"><div id="prompt" class="interact-title"></div><div id="choices" class="choices"></div>
+      <div id="freeform" class="freeform hidden"><textarea id="answer" placeholder="在这里输入你的处理方式……"></textarea><button id="submitAnswer">提交回答 →</button></div>
+      <div class="preview-hint">本页只预览分镜和交互样式；完整流程请运行 frontend-js。</div></div>
+    <div class="footer"><span>点击“继续”或按空格推进</span><span>选择与自由回答不会同时出现</span></div>
+  </div></section>
+<section id="end" class="screen end hidden"><div class="end-box"><div class="kicker" style="text-align:center">THE STORY ENDS HERE</div>
+  <h2 id="endingTitle"></h2><div id="rating" class="end-rating"></div><div class="score"><strong id="score">82</strong><small> / 100 · 演示评分</small></div>
+  <div id="endingStory" class="end-story"></div><div id="summary" class="summary"></div><div id="badges" class="badges"></div>
+  <div class="end-actions"><button id="again" class="again">返回封面 ↻</button></div></div></section>
+<div class="preview-mark">LOCAL DESIGN PREVIEW</div></div>
+<script>
+const DATA = {"scenes":[{"id":"N02","number":2,"act":"第二幕 · 陌生来电","title":"陌生来电","time":"10月27日 · 回家途中","bg":"B","person":"alert","speaker":"自称票务部的人","text":"陌生来电准确报出林夏姓名、票号NV-10352和VIP A区3排。对方说，小岚私自转赠员工票可能影响考核；原价1500元的票只需补900元，就能替她“压下去”。\n电话挂断后，一条备注“大剧院票务—0352”的微信申请跳了出来。","phone":["来电：自称票务部 · 工号0352","“加我微信，发您收款码，900元补差就办好。”"],"prompt":"你要添加这个微信吗？","options":[["添加微信，听他进一步解释",4],["先不添加，自己核实剧院规定",3]],"beats":[{"who":"旁白","text":"售票窗口的灯还亮着，队伍还在排。林夏已经走过了门廊。"},{"who":"旁白","text":"回家的路不算远。走到一半，手机响了——陌生号码，本市归属。"},{"who":"票务部","text":"喂，您好，请问是林先生吗？","phone":"来电 · 本市号码 · 未知联系人"},{"who":"林夏","text":"……是我。您哪位？"},{"who":"票务部","text":"我是大剧院票务部的，工号 0352。您今晚在售票处领了一张《南瓜夜·尖叫音乐会》的票，10 月 31 日 19:30，VIP A 区 3 排，票号 NV-10352。是咱们票务部的小岚给您的，对吧？"},{"who":"旁白","text":"林夏把手插进外套口袋，摸到了那张票的硬边。票号和座位，对方一个字都没说错。"},{"who":"林夏","text":"……对。怎么了？"},{"who":"票务部","text":"这张是员工内部福利票，按规定只能员工本人使用。今天财务在后台盘票的时候发现了这个情况——票要作废回收，小岚那边，也要按内部规定处理。"},{"who":"林夏","text":"处理？什么意思？"},{"who":"票务部","text":"记一次违规。严重的，可能影响她的工作考核。"},{"who":"票务部","text":"不过您放心，我跟小岚是同事，也知道她是好心。这事我帮您压一压：我跟领导申请了，可以给您走个内部补差——这票原价 1500，给您打六折，900 块。票就名正言顺归您，小岚那边我也替您瞒过去。"},{"who":"旁白","text":"路口的红灯亮了。林夏站在斑马线前，没有往前走。他今晚本来就是要来买票的，900 也不是不能接受。"},{"who":"林夏","text":"你们怎么知道我手机号的？"},{"who":"票务部","text":"您买票的时候留了联系方式嘛，后台都有的。"},{"who":"票务部","text":"这样，您加我这个手机号的微信，我把收款码发给您。转 900，备注写“员工票补差”，我这边收到就帮您把票状态改好，这事就翻篇。"},{"who":"旁白","text":"电话挂了。紧接着，一条微信好友申请跳出来，备注是“大剧院票务 - 0352”。","phone":"好友申请：大剧院票务 - 0352"},{"who":"旁白","text":"绿灯亮了。他还站在原地。"}]},{"id":"N08","number":8,"act":"第八幕 · 熟悉的头像","title":"熟悉的头像","time":"10月27日 · 微信聊天","bg":"B","person":"alert","speaker":"“小岚”","text":"新账号说出VIP A区3排、售票窗口的重逢，还提起林夏答应请她吃饭。可是问到只有老同学知道的共同往事，她的回答开始含糊，也总避开见面。\n熟悉的细节，能证明账号就是本人吗？","phone":["头像：看起来像小岚","朋友圈：几张山货照片","共同回忆：回答含糊"],"prompt":"面对这个账号，你怎么做？","options":[["先继续聊天",9],["通过其他渠道核实她是不是本人","E05"]],"beats":[{"who":"小岚","text":"是我，小岚。我忙完啦。你今天留的号码我看到了，加我微信。","phone":"小岚：是我，小岚。我忙完啦"},{"who":"旁白","text":"林夏看着这行字，悬了一晚上的心落了下来。"},{"who":"小岚","text":"是你吧？我今天在售票窗口差点没认出你！"},{"who":"小岚","text":"票收好了吧？VIP A 区 3 排，你自己都没舍得坐那么靠前——我记得你当时眼睛都直了。"},{"who":"旁白","text":"座位、票面、他当时说过的话，对方都记得。"},{"who":"旁白","text":"他点开对方的朋友圈。","phone":"朋友圈：几张山货照片 · 三天可见"},{"who":"小岚","text":"对了，你怎么走那么早？我忙完出来你都不在了，我还想跟你多说两句呢。"},{"who":"小岚","text":"改天请你吃饭——不对，是你欠我的！你说好了要请我吃饭的！"},{"who":"旁白","text":"林夏笑了一下。他问起当年班里那个总被点名的人，后来怎么样了。"},{"who":"小岚","text":"啊……那个啊，我最近也少联系，回头帮你问问。"},{"who":"旁白","text":"对方把话岔开了。可头像、昵称、那些只有当面才看得见的细节，又都对得上。"},{"who":"旁白","text":"傍晚那点“联系方式没换成功”的遗憾，被这几句话冲淡了。"}]},{"id":"N15","number":15,"act":"第十五幕 · 终场前的核实","title":"终场前的核实","time":"10月31日 · 演出前","bg":"D","person":"relief","speaker":"林夏","text":"林夏把两段经历放到一起：陌生“票务”掌握真实票面信息，却要求个人收款；新微信知道窗口细节，却回避共同回忆；前两笔山货真发货，也无法证明身份。\n现在他要决定如何核实、保留线索，以及下一步求助。","prompt":"自由回答：你现在会怎样核实身份、处理证据和提醒他人？","free":true,"beats":[{"who":"旁白","text":"林夏没有继续回应新的转账要求。"},{"who":"旁白","text":"那天是 10 月 31 日，万圣节。演出晚上 19:30 开场。"},{"who":"旁白","text":"他把桌上的东西摆开：一张票、一部手机、两个聊天框。"},{"who":"旁白","text":"他把两段经历并排放在一起，一条一条对。"},{"who":"旁白","text":"第一，那个“票务”报得出他的姓名、票号、座位，却要他把钱转到个人账户。"},{"who":"旁白","text":"第二，他亲手写的号码留在售票处的便签上；信息也可能从那儿流出。"},{"who":"旁白","text":"第三，新加的“小岚”知道窗口里的细节，却回避只有他们俩知道的往事。"},{"who":"旁白","text":"第四，对方只看到那天傍晚他走进售票处，之前的事，一句也说不出来。"},{"who":"旁白","text":"第五，前两单山货确实发了货。可那只证明交易发生过，证明不了账号是谁。"},{"who":"旁白","text":"两个可疑联系人有同样的手法：说出一部分真实信息，再催他转一笔。"},{"who":"旁白","text":"他把票从抽屉里拿出来，放在桌上。票是真的，票号是真的，演出也是真的。"},{"who":"旁白","text":"假的，是那些围着一张真票说话的人。"},{"who":"旁白","text":"手机还剩三成电。屏幕上两个对话框，都静着。"},{"who":"旁白","text":"窗外，商场的南瓜灯还亮着。林夏拿起手机。"}]}],"ending":["反诈同行，守护身边的人","完美","林夏停止后续付款，梳理了假票务和假熟人两段话术，并向朋友分享经过脱敏的反诈提醒。","分享应准确、尊重接收者，同时继续处理自己的风险。"],"assets":{"cover":"public/art/cover.jpg","end":"public/art/end.jpg","A":"public/art/A.jpg","B":"public/art/B.jpg","C":"public/art/C.jpg","D":"public/art/D.jpg","lin":"public/art/lin.jpg","alert":"public/art/alert.jpg","relief":"public/art/relief.jpg","lan":"public/art/lan.jpg","lan2":"public/art/lan2.jpg","zhou":"public/art/zhou.jpg","ticket":"public/art/ticket.jpg","caller":"public/art/caller.jpg","caller2":"public/art/caller2.jpg"}};
+const $ = selector => document.querySelector(selector);
+let current = null, index = 0;
+function background(key){ $('#back').style.backgroundImage = 'url("' + encodeURI(DATA.assets[key] || DATA.assets.B) + '")'; }
+function show(view){
+  for(const id of ['cover','game','end']) $('#'+id).classList.toggle('hidden',id!==view);
+  document.querySelectorAll('.preview-nav button').forEach(button=>button.classList.toggle('active',button.dataset.view===(view==='game'?current?.id:view)));
+}
+function portraitFor(beat){
+  const remote = beat.who==='票务部'||beat.who==='剧院总机'||(beat.who==='小岚'&&current.number>=8);
+  const image = remote ? DATA.assets[beat.who==='票务部'?'caller':'caller2'] : DATA.assets[current.person] || DATA.assets.lin;
+  if($('#portraitImg').getAttribute('src')!==image) $('#portraitImg').src=image;
+  $('#portrait').classList.toggle('speaking',beat.who!=='旁白');
+  $('#portrait').classList.toggle('muted',beat.who==='旁白');
+  $('#portraitName').textContent=remote?(beat.who==='小岚'?'未核实的微信账号':beat.who):'林夏';
+  $('#speaker').textContent=beat.who==='小岚'&&current.number>=8?'自称“小岚”的账号':beat.who;
+  $('#phoneHead').textContent=current.number>=8&&current.number<=14?'微信 · 身份未核实':'陌生来电 · 身份未核实';
+}
+function drawBeat(){
+  const beat=current.beats[index]; portraitFor(beat);
+  const text=$('#narrative'); text.replaceChildren();
+  current.beats.slice(Math.max(0,index-1),index+1).forEach((item,i)=>{const p=document.createElement('p');p.className='beat'+(i===0&&index>0?' previous':'');p.textContent=item.text;text.append(p)});
+  const messages=current.beats.slice(0,index+1).filter(item=>item.phone);
+  $('#phone').classList.toggle('hidden',messages.length===0);$('#phoneBody').replaceChildren();
+  for(const item of messages){const div=document.createElement('div');div.className='message';div.textContent=item.phone;$('#phoneBody').append(div)}
+  $('#beatCount').textContent=(index+1)+' / '+current.beats.length;
+  $('#nextBeat').textContent=index===current.beats.length-1?'显示互动 ▸':'继续 ▸';
+  $('#beatCtl').classList.remove('hidden');$('#prompt').classList.add('hidden');$('#choices').classList.add('hidden');$('#freeform').classList.add('hidden');
+}
+function showInteraction(){
+  $('#beatCtl').classList.add('hidden');$('#prompt').classList.remove('hidden');
+  $('#prompt').textContent=current.prompt;
+  $('#choices').replaceChildren();
+  if(current.free){$('#freeform').classList.remove('hidden');$('#choices').classList.add('hidden')}
+  else {$('#freeform').classList.add('hidden');$('#choices').classList.remove('hidden');
+    current.options.forEach(([label],i)=>{const button=document.createElement('button');button.className='choice preview-choice';button.textContent=String.fromCharCode(65+i)+'. '+label;
+      button.onclick=()=>{document.querySelectorAll('.preview-choice').forEach(x=>x.classList.remove('selected'));button.classList.add('selected')};$('#choices').append(button)})}
+}
+function openScene(id){ current=DATA.scenes.find(scene=>scene.id===id); if(!current)return; index=0; background(current.bg); show('game');
+  $('#progressLabel').textContent='第'+current.number+'幕 · '+current.number+'/15';$('#progressBar').style.width=(current.number/15*100)+'%';
+  $('#sceneTitle').textContent=current.title;$('#sceneMeta').textContent=current.time;$('#actLabel').textContent=current.act;
+  $('#prop').classList.toggle('hidden',!current.prop);if(current.prop)$('#prop').src=DATA.assets[current.prop]||current.prop;
+  $('#answer').value='';drawBeat();
+}
+function openEnding(){background('end');show('end');$('#endingTitle').textContent=DATA.ending[0];$('#rating').textContent='E14 · '+DATA.ending[1];
+  $('#endingStory').textContent=DATA.ending[2];$('#summary').textContent=DATA.ending[3];$('#badges').replaceChildren();
+  ['线索保管员','安全传递者'].forEach(label=>{const badge=document.createElement('span');badge.className='badge';badge.textContent='✦ '+label;$('#badges').append(badge)})}
+document.querySelectorAll('.preview-nav button').forEach(button=>button.onclick=()=>{const id=button.dataset.view;if(id==='cover'){background('cover');show('cover')}else if(id==='end')openEnding();else openScene(id)});
+$('#start').onclick=()=>openScene('N02');$('#again').onclick=()=>{background('cover');show('cover')};
+$('#nextBeat').onclick=()=>{if(index<current.beats.length-1){index++;drawBeat()}else showInteraction()};
+$('#skipBeats').onclick=()=>{index=current.beats.length-1;drawBeat();showInteraction()};
+$('#submitAnswer').onclick=()=>{$('#answer').value=$('#answer').value.trim()||'先联系剧院官方总机核实身份，保存聊天与转账记录，再向平台和银行咨询止付。';$('#answer').focus()};
+document.addEventListener('keydown',event=>{if(event.code==='Space'&&current&&!$('#game').classList.contains('hidden')&&!['TEXTAREA','BUTTON'].includes(event.target.tagName)&&!$('#beatCtl').classList.contains('hidden')){event.preventDefault();$('#nextBeat').click()}});
+background('cover');show('cover');
+</script></body></html>

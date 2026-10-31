@@ -91,7 +91,6 @@ def _map_open_intent(node_id: str, text: str) -> Dict[str, Any]:
 class StorySessions:
     def __init__(self, ttl_seconds: int = SESSION_TTL_SECONDS):
         self._ttl_seconds = ttl_seconds
-        self._config = engine.load_frontend_graph_config()
         self._sessions: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.RLock()
 
@@ -123,93 +122,26 @@ class StorySessions:
             "current_node": session["current_node"],
         }
 
-    def _public_node(self, session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    @staticmethod
+    def _public_node(session: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
         node_id = session.get("current_node")
         if node_id is None:
             return None
-        node = engine.resolve_graph_node(node_id, self._config)
+        node = engine.resolve_node(node_id, session["flags"])
         return {
             "id": node["id"],
-            "title": node["title"],
+            "act": node["act"],
             "time": node["time"],
-            "bg": node.get("bg"),
-            "person": node.get("person"),
-            "speaker": node["speaker"],
-            "text": node["text"],
-            "phone": node.get("phone", []),
-            "prop": node.get("prop"),
-            "prompt": node["prompt"],
-            "free": node["free"],
-            "ui_option_order": node.get("ui_option_order", []),
+            "scene": node["scene"],
+            "lines": node.get("lines", []),
+            "prompt": node.get("prompt"),
+            "ui_option_order": node["ui_option_order"],
             "options": [
-                {"id": option["id"], "text": option["text"], "response": option.get("response", "")}
+                {"id": option["id"], "text": option["text"], "response": option["response"]}
                 for option in node["options"]
             ],
             "variant_id": node["variant_id"],
         }
-
-    def _graph_transition(
-        self, session: Dict[str, Any], node_id: str, target: str,
-        response: str, history_entry: Dict[str, Any], replay_key: str,
-    ) -> Dict[str, Any]:
-        session["log"].append(history_entry)
-        session["pending_open"] = None
-        if target.startswith("E"):
-            session["current_node"] = None
-            session["status"] = "finished"
-            session["final_review"] = engine.build_frontend_review(
-                session["flags"], target, session["log"], self._config
-            )
-            session["final_review"]["status"] = "finished"
-            event = "finished"
-        else:
-            session["current_node"] = target
-            event = "choice_recorded"
-        result = {
-            "session_id": session["session_id"],
-            "response": response,
-            "target": target,
-            "next_node": self._public_node(session),
-            "progress": self._progress(session),
-            "status": session["status"],
-            "event": event,
-        }
-        if target.startswith("E"):
-            result["ending_id"] = target
-            result["review"] = copy.deepcopy(session["final_review"])
-        session["responses"][node_id] = {
-            "option_id": replay_key,
-            "result": copy.deepcopy(result),
-        }
-        return result
-
-    def _answer_graph_locked(
-        self, session: Dict[str, Any], node_id: str, option_id: str,
-        source: str = "closed", intent: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        previous = session["responses"].get(node_id)
-        if previous is not None:
-            if previous["option_id"] == option_id:
-                return copy.deepcopy(previous["result"])
-            raise StoryError(409, "该节点已作答")
-        if session["status"] != "ongoing":
-            raise StoryError(409, "会话已结束")
-        if session["current_node"] != node_id:
-            raise StoryError(409, "节点不匹配；请读取当前会话状态")
-        try:
-            applied = engine.apply_graph_choice(session["flags"], node_id, option_id, self._config)
-        except ValueError as exc:
-            raise StoryError(400, str(exc))
-        session["flags"] = applied["flags"]
-        node = engine.resolve_graph_node(node_id, self._config)
-        option = next(item for item in node["options"] if item["id"] == option_id)
-        entry = {
-            "node": node_id, "option": option_id, "answer": option["text"],
-            "source": source, "intent": intent,
-        }
-        return self._graph_transition(
-            session, node_id, applied["target"], applied["response"], entry, option_id
-        )
 
     def start(self) -> Dict[str, Any]:
         with self._lock:
@@ -244,8 +176,6 @@ class StorySessions:
         source: str = "closed",
         intent: Optional[str] = None,
     ) -> Dict[str, Any]:
-        if self._config.get("meta", {}).get("model") == "frontend_graph_v1":
-            return self._answer_graph_locked(session, node_id, option_id, source, intent)
         previous = session["responses"].get(node_id)
         if previous is not None:
             if previous["option_id"] == option_id:
@@ -324,26 +254,6 @@ class StorySessions:
             session = self._get_session(session_id)
             if session["status"] != "ongoing" or session["current_node"] != node_id:
                 raise StoryError(409, "节点不匹配；请读取当前会话状态")
-            node = engine.resolve_graph_node(node_id, self._config)
-            if node.get("free"):
-                previous = session["responses"].get(node_id)
-                if previous is not None:
-                    return copy.deepcopy(previous["result"])
-                mapped = engine.apply_graph_free_answer(session["flags"], node_id, text, self._config)
-                if mapped is None:
-                    return {
-                        "session_id": session_id, "node_id": node_id,
-                        "intent": "unclear", "need_confirm": True,
-                        "target": None,
-                    }
-                session["flags"] = mapped["flags"]
-                entry = {
-                    "node": node_id, "answer": text, "target": mapped["target"],
-                    "source": "open", "intent": "keyword_route",
-                }
-                return self._graph_transition(
-                    session, node_id, mapped["target"], "", entry, mapped["target"]
-                )
             node = engine.resolve_node(node_id, session["flags"])
             open_spec = node.get("open_answer") or {}
             if not open_spec.get("enabled"):

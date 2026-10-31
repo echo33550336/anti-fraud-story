@@ -1,0 +1,232 @@
+{
+  "story_id": "one-ticket-v1",
+  "part": "prologue",
+  "protagonist_unvoiced": "林夏",
+  "voice_map": {
+    "旁白": {
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz"
+    },
+    "小岚": {
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz"
+    },
+    "售票处同事（画外）": {
+      "voice": "zh-CN-XiaoyiNeural",
+      "rate": "+6%",
+      "pitch": "+4Hz"
+    }
+  },
+  "skipped": [
+    "P04",
+    "P06",
+    "P09",
+    "P11",
+    "P17",
+    "P19",
+    "P24"
+  ],
+  "total": 18,
+  "lines": [
+    {
+      "key": "P01",
+      "speaker": "旁白",
+      "focus": "none",
+      "text": "10月27日，傍晚六点半。距离万圣节还有几天，市中心的大剧院门口已经热闹起来。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P01.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P02",
+      "speaker": "旁白",
+      "focus": "none",
+      "text": "南瓜灯挂满门廊，紫色射灯映着玻璃墙。戴巫师帽的观众走向入口，一个小女孩举着发光南瓜灯，从人群里跑过。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P02.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P03",
+      "speaker": "旁白",
+      "focus": "lin",
+      "text": "林夏刚下班，特意绕路来到售票处。他想买一张万圣节演出的票。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P03.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P05",
+      "speaker": "旁白",
+      "focus": "lan",
+      "text": "窗口里，穿着剧院工装的姑娘正整理票夹。她一抬头，动作忽然停住。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P05.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P07",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "林夏？！",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P07.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P08",
+      "speaker": "旁白",
+      "focus": "both",
+      "text": "票夹险些从她手里滑下。两人隔着窗口愣了片刻，随后一起笑了。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P08.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P10",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "我在这儿上班啊，票务！你呢，来看演出？",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P10.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P12",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "毕业以后就没见过了吧。你怎么还是这副样子。",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P12.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P13",
+      "speaker": "旁白",
+      "focus": "both",
+      "text": "林夏拿出钱，小岚却把他的手轻轻挡了回去。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P13.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P14",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "别买了。我这儿有员工内部票，每个员工每月两张福利票，我这月的还没用。送你。",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P14.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P15",
+      "speaker": "旁白",
+      "focus": "ticket",
+      "text": "她从票夹里抽出一张硬卡纸门票，隔着窗口递来。金边在灯下微微发亮。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P15.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P16",
+      "speaker": "旁白",
+      "focus": "ticket",
+      "text": "票面写着《南瓜夜·尖叫音乐会》、10月31日19:30、VIP A区3排。右下角还有一行小字：员工内部赠票，不对外销售。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P16.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P18",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "老同学，客气什么。",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P18.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P20",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "你写这块，我空了加你！",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P20.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P21",
+      "speaker": "旁白",
+      "focus": "note",
+      "text": "林夏低头在便签上写下联系方式。纸的开头是“159……”，余下的号码被他手掌挡住。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P21.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P22",
+      "speaker": "售票处同事（画外）",
+      "focus": "none",
+      "text": "小岚！你过来一下！",
+      "voice": "zh-CN-XiaoyiNeural",
+      "rate": "+6%",
+      "pitch": "+4Hz",
+      "audio": "public/voice/prologue/P22.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P23",
+      "speaker": "小岚",
+      "focus": "lan",
+      "text": "马上！你写完放这就好！",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "rate": "-4%",
+      "pitch": "+2Hz",
+      "audio": "public/voice/prologue/P23.mp3",
+      "audio_ready": false
+    },
+    {
+      "key": "P25",
+      "speaker": "旁白",
+      "focus": "none",
+      "text": "林夏走出剧院。写着联系方式的便签，还留在售票处的窗口里。",
+      "voice": "zh-CN-YunjianNeural",
+      "rate": "-6%",
+      "pitch": "-1Hz",
+      "audio": "public/voice/prologue/P25.mp3",
+      "audio_ready": false
+    }
+  ]
+}

@@ -2,15 +2,9 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional
 
 from .config_loader import load_config
-from .scoring import (
-    compute_dimension_score,
-    compute_frontend_score,
-    total_paid,
-)
 
 DIMENSION_ORDER = (
     "funds",
@@ -34,134 +28,6 @@ REFERENCE_SCORES = {
 }
 
 LOSS_COUNTER_KEYS = frozenset(("ticket_loss", "shop_loss", "recovery_loss"))
-FRONTEND_GRAPH_PATH = Path(__file__).resolve().parent / "config" / "story_frontend_graph.json"
-FRONTEND_GRAPH_MODEL = "frontend_graph_v1"
-
-
-def load_frontend_graph_config() -> Dict[str, Any]:
-    """Load the additive graph config without changing the legacy default."""
-    config = load_config(str(FRONTEND_GRAPH_PATH))
-    if config.get("meta", {}).get("model") != FRONTEND_GRAPH_MODEL:
-        raise ValueError("frontend graph config has an unexpected model")
-    return config
-
-
-def resolve_graph_node(
-    node_id: str, config: Mapping[str, Any]
-) -> Dict[str, Any]:
-    node = next((item for item in config.get("nodes", []) if item.get("id") == node_id), None)
-    if node is None:
-        raise ValueError("unknown node: %s" % node_id)
-    resolved = dict(node)
-    resolved["variant_id"] = "default"
-    return resolved
-
-
-def _graph_condition_matches(condition: Mapping[str, Any], flags: Mapping[str, Any]) -> bool:
-    for key, expected in condition.items():
-        if key.endswith("_gt"):
-            field = key[:-3]
-            actual = flags.get(field, 0)
-            if isinstance(actual, bool) or not isinstance(actual, int) or actual <= expected:
-                return False
-        elif flags.get(key, False) != expected:
-            return False
-    return True
-
-
-def _graph_option_target(option: Mapping[str, Any], flags: Mapping[str, Any]) -> str:
-    for conditional in option.get("conditional_targets", []):
-        if _graph_condition_matches(conditional.get("when", {}), flags):
-            return conditional["target"]
-    return option["target"]
-
-
-def apply_graph_choice(
-    flags: Mapping[str, Any], node_id: str, option_id: str,
-    config: Mapping[str, Any],
-) -> Dict[str, Any]:
-    node = resolve_graph_node(node_id, config)
-    if node.get("free"):
-        raise ValueError("node requires a free answer")
-    option = next((item for item in node["options"] if item.get("id") == option_id), None)
-    if option is None:
-        raise ValueError("invalid option for %s: %s" % (node_id, option_id))
-    updated = dict(flags)
-    updated[node_id.lower()] = option_id
-    for key, value in option.get("flags", {}).items():
-        updated[key] = value
-    for key, amount in option.get("increments", {}).items():
-        current = updated.get(key, 0)
-        if isinstance(current, bool) or not isinstance(current, int) or current < 0:
-            raise ValueError("%s must be a non-negative integer" % key)
-        if isinstance(amount, bool) or not isinstance(amount, int) or amount < 0:
-            raise ValueError("configured increment %s must be a non-negative integer" % key)
-        updated[key] = current + amount
-    return {
-        "flags": updated,
-        "target": _graph_option_target(option, updated),
-        "response": option.get("response", ""),
-    }
-
-
-def apply_graph_free_answer(
-    flags: Mapping[str, Any], node_id: str, text: str,
-    config: Mapping[str, Any],
-) -> Optional[Dict[str, Any]]:
-    node = resolve_graph_node(node_id, config)
-    if not node.get("free"):
-        raise ValueError("node does not accept a free answer")
-    spec = node.get("free_answer", {})
-    if len(text.strip()) < spec.get("min_length", 1):
-        return None
-    normalized = text.casefold()
-    for route in spec.get("routes", []):
-        any_words = route.get("any_keywords", [])
-        all_words = route.get("all_keywords", [])
-        none_words = route.get("none_keywords", [])
-        if any_words and not any(word.casefold() in normalized for word in any_words):
-            continue
-        if all_words and not all(word.casefold() in normalized for word in all_words):
-            continue
-        if any(word.casefold() in normalized for word in none_words):
-            continue
-        updated = dict(flags)
-        updated.update(route.get("set_flags", {}))
-        updated[node_id.lower()] = route["target"]
-        return {"flags": updated, "target": route["target"], "route": route}
-    return None
-
-
-def build_frontend_review(
-    flags: Mapping[str, Any], ending_id: str, history: List[Mapping[str, Any]],
-    config: Mapping[str, Any],
-) -> Dict[str, Any]:
-    ending = next((item for item in config["endings"] if item["id"] == ending_id), None)
-    if ending is None:
-        raise ValueError("unknown frontend ending: %s" % ending_id)
-    scoring_spec = config["scoring"]
-    paid = total_paid(flags, scoring_spec["payment_fields"])
-    score = compute_frontend_score(flags, ending_id, scoring_spec)
-
-    badges = []
-    for badge in scoring_spec["badges"]:
-        earned = any(flags.get(key, False) for key in badge.get("any_flags", []))
-        earned = earned or ending_id in badge.get("any_endings", [])
-        earned = earned or any(flags.get(key, 0) > 0 for key in badge.get("any_paid_fields", []))
-        if earned:
-            badges.append(badge["name"])
-    return {
-        "ending_id": ending_id,
-        "title": ending["title"],
-        "rating": ending["rating"],
-        "narration": ending["narration"],
-        "note": ending["note"],
-        "score": score,
-        "badges": badges,
-        "paid": {key: flags.get(key, 0) for key in scoring_spec["payment_fields"]},
-        "total_paid": paid,
-        "history": [dict(item) for item in history],
-    }
 
 
 def _index_config(config: Mapping[str, Any]):
@@ -388,9 +254,30 @@ def compute_score(
 ) -> int:
     """Return the weighted completion score mapped to an integer from 50 to 100."""
     current = _get_config(config)
-    return compute_dimension_score(
-        dimensions, n15, current["meta"]["score"], DIMENSION_ORDER
-    )
+    if n15 not in ("A", "B"):
+        raise ValueError("completed story requires an N15 choice")
+    if set(dimensions.keys()) != set(DIMENSION_ORDER):
+        raise ValueError("dimensions must contain exactly the seven 08 dimensions")
+
+    score_spec = current["meta"]["score"]
+    weights = score_spec["weights"]
+    weighted_sum = 0
+    for name in DIMENSION_ORDER:
+        level = dimensions[name]
+        if isinstance(level, bool) or not isinstance(level, int) or level not in (0, 1, 2):
+            raise ValueError("dimension levels must be integer values from 0 to 2")
+        weighted_sum += weights[name] * level
+
+    denominator = int(score_spec["denominator"])
+    if denominator <= 0:
+        raise ValueError("score denominator must be positive")
+    raw_numerator = int(score_spec["base"]) * weighted_sum
+    all_protected = all(dimensions[name] == 2 for name in DIMENSION_ORDER)
+    if all_protected and n15 == "B":
+        raw_numerator += int(score_spec["share_bonus"]) * denominator
+
+    # final = round_half_up(50 + raw_score / 2), using integer arithmetic.
+    return 50 + (raw_numerator + denominator) // (2 * denominator)
 
 
 def _ending_condition_value(

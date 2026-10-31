@@ -1,0 +1,22 @@
+{
+  "llm": {
+    "enabled": false,
+    "base_url": "https://api.openai-next.com/v1",
+    "model": "gpt-5.6-sol",
+    "api_key": "",
+    "timeout_seconds": 30,
+    "max_tokens": 512,
+    "temperature": 0
+  },
+  "rubric": {
+    "total": 100,
+    "dimensions": [
+      { "name": "风险识别", "max": 40, "hint": "是否指出未核实身份、提前转账、陌生链接、脱离平台等风险" },
+      { "name": "行动正确性", "max": 30, "hint": "是否采取核实官方渠道、停止联系、保全证据、举报求助等正确动作" },
+      { "name": "具体可执行", "max": 20, "hint": "是否给出可落地步骤，而不是空泛表态" },
+      { "name": "表达清晰", "max": 10, "hint": "是否说清做什么、为什么" }
+    ],
+    "instruction": "按维度打分后求和，总分 0-100 的整数；点评不超过 60 个字，先指出优点再给一条改进建议；不评价人格，不预测真实受骗概率。"
+  },
+  "notes": "仅用于 /api/story/open 的开放回答点评；密钥可用环境变量 LLM_API_KEY 覆盖；换机只需改本文件或环境变量。"
+}
