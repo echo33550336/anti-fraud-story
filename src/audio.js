@@ -145,6 +145,13 @@
     }
   }
 
+  function firstGesture(event) {
+    if (event.target && event.target.closest && event.target.closest('.sound-toggle')) return;
+    document.removeEventListener('pointerdown', firstGesture);
+    unlock();
+  }
+  document.addEventListener('pointerdown', firstGesture);
+
   function init() {
     var buttons = document.querySelectorAll('.sound-toggle');
     buttons.forEach(function (button) {
