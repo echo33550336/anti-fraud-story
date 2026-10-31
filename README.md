@@ -4,6 +4,8 @@ An interactive, choice-driven anti-fraud exercise. Players encounter ticketing i
 
 > **Simulation only:** All payments are fictional. No real payment service is connected. Free-text answers are matched with configured keywords; the project does not use generative AI to interpret them.
 
+**Online demo:** <https://echo33550336.github.io/-/> — a static front-end port of the same graph and integer scoring rules. The Python backend version lives in [`backend/`](backend/).
+
 ## What makes it distinctive
 
 - **Two connected scam patterns:** A fake ticketing fee and repeated-transfer pressure lead into small purchases from an impersonated friend and a larger investment request.
