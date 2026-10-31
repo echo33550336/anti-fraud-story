@@ -15,16 +15,51 @@ An interactive, choice-driven anti-fraud exercise. Players encounter ticketing i
 - **Server-side review:** The backend records choices and simulated payment amounts, then calculates the score and badges and returns the matching ending.
 - **Practical response skills:** Players practice independent verification, stopping further payments, preserving relevant evidence, contacting official channels, and sharing privacy-aware warnings.
 
-## Tech stack
+## 技术栈与 Agent 架构 / Tech stack & agent architecture
 
-| Layer | Implementation |
+> **定位：一个可审计、可复现、可离线运行的“确定性剧情 Agent”，不是 LLM 聊天套壳。**
+> 它把 Agent 的 `观察 → 决策 → 行动 → 记忆 → 复盘` 闭环，落在反诈训练这个**不能胡说**的场景里。
+
+### Agent 闭环
+
+| Agent 环节 | 本项目实现 |
 |---|---|
-| Frontend | HTML, CSS, vanilla JavaScript; no build step |
-| API | Python standard library `http.server` |
-| Story engine | JSON graph configuration, deterministic conditional routing, keyword rules |
-| Sessions | In-memory server-side state with a two-hour idle timeout |
+| 观察 Observation | 玩家选择、自由回答、当前节点、已发生事件 |
+| 决策 Policy | 剧情图条件路由 + 自由回答关键词意图路由 + 节点校验 |
+| 行动 Action | 节点跳转、付款模拟、提前结局、结局触发 |
+| 记忆 Memory | 会话 flags、历史选择、累计付款、2 小时 TTL |
+| 复盘 Reflection | 路径复盘、整数分数、徽章、结局解释 |
+| 工具边界 Tools | `/api/story/start`、`answer`、`open`、`review` 四个显式 API |
+| 护栏 Guardrails | 服务端权威、确定性、无 LLM、无外网、参数校验 |
 
-There are no third-party Python dependencies. Sessions are not stored in a database and are lost when the server restarts, so the current setup is intended for local demos and single-process use.
+### 技术栈
+
+| 层 | 实现 | 关键能力 |
+|---|---|---|
+| 运行时 | Python 3.7+ 标准库 `http.server` | 单进程托管 API + 静态页面；零第三方依赖；一条命令启动 |
+| 剧情策略 | JSON 图配置 + 确定性条件路由 | 15 节点、16 结局、条件边、提前结局、flags 状态；无死路 |
+| 自由回答 | 关键词意图路由 | N03 核实/继续；N15 删除/分享/举报/官方核实；不依赖 LLM |
+| 会话记忆 | 内存 session store | flags / history / paid / TTL 2h；重复提交保护；不落盘 |
+| 评分 | 整数评分函数 | 付款每满 100 扣 1、最多扣 50；结局罚分；优秀结局保底 82；10–100 |
+| 前端 | 原生 HTML / CSS / JavaScript | 零构建；15 张 AI 场景/立绘；虚拟手机；选项/自由回答；复盘页 |
+| 前端引擎 | `static-engine.js` 同构实现 | 与 Python 版同一份图配置/整数规则；GitHub Pages 可独立运行 |
+| 音效/动效 | 原生 Web Audio + CSS | 原创 32 秒 BGM、点击/来电/付款/结局音效、转场/打字机/手机抖动 |
+| 校验/测试 | `unittest` + 配置校验脚本 | 13 项评分单测；16/16 结局；130 条终止路径全量对拍 |
+| 交付 | 本地单进程 / GitHub Pages / Docker | 现场断网可跑；Pages 稳定 Demo；Render/Docker 备用 |
+
+### 为什么是 Agent 赛道
+
+- **不是“模型生成下一步”**：剧情由可验证的图策略推进，自由回答由关键词意图路由；不调用大模型，不产生幻觉。
+- **可复现、可验收**：同一条路径必得同一结局和分数；130 条终止路径、16 个结局、13 项单测全部可复算。
+- **有完整 Agent 工程属性**：状态、策略、工具边界、记忆、护栏、可观测复盘；服务端是唯一权威。
+- **确定性是场景优势**：反诈训练不能胡说；零 API 成本、断网可跑、现场不怕模型限流。
+- **可平滑升级**：自由回答可在路由层替换为 LLM 意图分类/评分；当前版本保持零依赖兜底。
+
+**硬指标：** 15 节点 / 16 结局 / 130 条终止路径 / 13 项单测 / 16 项配置校验 / 前后端评分多重集一致 / 零第三方依赖。
+
+详细版（含架构图、PPT 两页文案、30 秒口播）：[`docs/技术栈与Agent架构.md`](docs/技术栈与Agent架构.md)
+
+> Sessions are in-memory and not persisted; the single-process setup is intended for local demos and single-instance deployment.
 
 ## Run locally
 
