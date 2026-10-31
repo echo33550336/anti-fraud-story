@@ -19,6 +19,8 @@ An interactive, choice-driven anti-fraud exercise. Players encounter ticketing i
 
 > **定位：一个可审计、可复现、可离线运行的“确定性剧情 Agent”，不是 LLM 聊天套壳。**
 > 它把 Agent 的 `观察 → 决策 → 行动 → 记忆 → 复盘` 闭环，落在反诈训练这个**不能胡说**的场景里。
+>
+> 在线 GitHub Pages 版是**前端同构实现**：同一份图配置/整数规则，无服务端会话；`/api/story/*`、服务端 session/记忆由 Python 后端版本提供。
 
 ### Agent 闭环
 
