@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var BGM_SRC = 'audio/bgm.wav';
+  var BGM_SRC = 'audio/bgm.wav?v=20261031c';
   var bgm = null;
   var ctx = null;
   var enabled = true;
