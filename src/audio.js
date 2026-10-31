@@ -9,6 +9,7 @@
   var ctx = null;
   var enabled = true;
   var unlocked = false;
+  var started = false;
 
   function ensureBgm() {
     if (bgm) return bgm;
@@ -47,6 +48,7 @@
     if (!enabled) return;
     var audio = ensureBgm();
     if (!audio) return;
+    started = true;
     try {
       var promise = audio.play();
       if (promise && promise.catch) promise.catch(function () {});
@@ -62,11 +64,13 @@
   }
 
   function updateButton() {
-    var button = document.getElementById('soundToggle');
-    if (!button) return;
-    button.textContent = enabled ? '♪ 音乐 开' : '♪ 音乐 关';
-    button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-    button.classList.toggle('is-off', !enabled);
+    var buttons = document.querySelectorAll('.sound-toggle');
+    if (!buttons.length) return;
+    buttons.forEach(function (button) {
+      button.textContent = enabled ? '♪ 音乐 开' : '♪ 音乐 关';
+      button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      button.classList.toggle('is-off', !enabled);
+    });
   }
 
   function unlock() {
@@ -79,6 +83,13 @@
   }
 
   function toggle() {
+    if (enabled && !started) {
+      unlocked = true;
+      resumeCtx();
+      playBgm();
+      updateButton();
+      return;
+    }
     enabled = !enabled;
     if (enabled) {
       resumeCtx();
@@ -134,17 +145,14 @@
     }
   }
 
-  document.addEventListener('pointerdown', unlock, { once: true });
-  document.addEventListener('keydown', unlock, { once: true });
-
   function init() {
-    var button = document.getElementById('soundToggle');
-    if (button) {
+    var buttons = document.querySelectorAll('.sound-toggle');
+    buttons.forEach(function (button) {
       button.addEventListener('click', function (event) {
         event.stopPropagation();
         toggle();
       });
-    }
+    });
     updateButton();
   }
 
