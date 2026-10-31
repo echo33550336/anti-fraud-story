@@ -1,18 +1,22 @@
+/* Static (GitHub Pages) UI for 终场前的一张票.
+ * Uses StaticEngine + data/story_frontend_graph.json; no backend required. */
 const $ = selector => document.querySelector(selector);
-// 同源部署（后端同时托管 frontend/）时用相对路径；本地分开调试（静态服务 8080）时回落到 5000。
-const API_BASE = window.ANTIFRAUD_API_BASE !== undefined
-  ? window.ANTIFRAUD_API_BASE
-  : (location.port === '8080' ? 'http://localhost:5000' : '');
-let sessionId = null;
+const GRAPH_URL = 'data/story_frontend_graph.json';
+const TOTAL_NODES = 15;
+
+let config = null;
+let flags = {};
+let history = [];
 let activeNode = null;
 let busy = false;
+let ready = false;
 
 function bg(key) {
   $('#back').style.backgroundImage = `url("${encodeURI(assets[key] || assets.cover)}")`;
 }
 
 function screen(name) {
-  ['cover', 'game', 'end'].forEach(item => $('#'+item).classList.toggle('hidden', item !== name));
+  ['cover', 'game', 'end'].forEach(item => $('#' + item).classList.toggle('hidden', item !== name));
 }
 
 function setText(element, value) {
@@ -26,33 +30,26 @@ function addMessage(text) {
   $('#phoneBody').append(element);
 }
 
-async function post(path, payload) {
-  const response = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || `请求失败（${response.status}）`);
-  return result;
-}
-
 function setBusy(value) {
   busy = value;
-  $('#start').disabled = value;
-  $('#again').disabled = value;
+  $('#start').disabled = value || !ready;
+  $('#again').disabled = value || !ready;
   $('#submitAnswer').disabled = value;
   $('#choices').querySelectorAll('button').forEach(button => { button.disabled = value; });
 }
 
-function render(node, progress) {
+function nodeById(nodeId) {
+  return StaticEngine.getNode(config, nodeId);
+}
+
+function render(node) {
   if (!node) return;
   activeNode = node;
   screen('game');
   bg(node.bg);
-  const number = Number(node.id.slice(1));
-  setText($('#progressLabel'), `节点 ${String(number).padStart(2, '0')} / ${progress.total || 15}`);
-  $('#progressBar').style.width = `${Math.min(100, number / (progress.total || 15) * 100)}%`;
+  const number = Number(String(node.id).slice(1));
+  setText($('#progressLabel'), `节点 ${String(number).padStart(2, '0')} / ${TOTAL_NODES}`);
+  $('#progressBar').style.width = `${Math.min(100, number / TOTAL_NODES * 100)}%`;
   setText($('#sceneTitle'), node.title);
   setText($('#sceneMeta'), node.time);
   setText($('#speaker'), node.speaker);
@@ -88,63 +85,66 @@ function render(node, progress) {
       $('#choices').append(button);
     });
   }
-  setText($('#status'), node.free ? '自由回答 · 由后端识别并推进' : '固定选项 · 由后端记录并推进');
+  setText($('#status'), node.free
+    ? '自由回答 · 由规则引擎识别并推进'
+    : '固定选项 · 由规则引擎记录并推进');
   setBusy(false);
 }
 
 function showReview(review) {
-  if (!review || !review.ending_id) throw new Error('后端没有返回完整结局复盘');
+  if (!review || !review.ending_id) {
+    toast('结算失败：缺少结局数据。');
+    return;
+  }
   activeNode = null;
   screen('end');
   bg('end');
   setText($('#endingTitle'), review.title);
   setText($('#rating'), `${review.ending_id} · ${review.rating}`);
   setText($('#score'), review.score);
-  setText($('#scoreLabel'), ' / 100 · 后端评分');
+  setText($('#scoreLabel'), ' / 100 · 规则评分');
   setText($('#endingStory'), review.narration);
   setText($('#summary'), review.note);
   $('#badges').replaceChildren();
   (review.badges || []).forEach(name => {
     const badge = document.createElement('span');
     badge.className = 'badge';
-    badge.textContent = `✦ ${typeof name === 'string' ? name : name.name}`;
+    badge.textContent = `✦ ${name}`;
     $('#badges').append(badge);
   });
   setBusy(false);
 }
 
-async function startSession() {
-  if (busy) return;
+function startSession() {
+  if (busy || !ready) return;
+  setBusy(true);
+  flags = {};
+  history = [];
+  render(nodeById('N01'));
+}
+
+function finish(endingId) {
+  const review = StaticEngine.buildReview(config, flags, endingId, history);
+  showReview(review);
+}
+
+function choose(option) {
+  if (busy || !activeNode) return;
   setBusy(true);
   try {
-    const result = await post('/api/story/start', {});
-    sessionId = result.session_id;
-    render(result.node, result.progress || {});
+    const applied = StaticEngine.applyChoice(config, flags, activeNode.id, option.id);
+    flags = applied.flags;
+    history.push({ node: activeNode.id, option: option.id, answer: option.text });
+    if (String(applied.target).startsWith('E')) finish(applied.target);
+    else render(nodeById(applied.target));
   } catch (error) {
     setBusy(false);
-    toast(`无法连接后端：${error.message}`);
+    toast(`选项处理失败：${error.message}`);
   }
 }
 
-async function choose(option) {
-  if (busy || !sessionId || !activeNode) return;
-  setBusy(true);
-  try {
-    const result = await post('/api/story/answer', {
-      session_id: sessionId,
-      node_id: activeNode.id,
-      option_id: option.id
-    });
-    if (result.status === 'finished') showReview(result.review);
-    else render(result.next_node, result.progress || {});
-  } catch (error) {
-    setBusy(false);
-    toast(`选项未提交：${error.message}`);
-  }
-}
-
-async function submitFreeAnswer() {
-  if (busy || !sessionId || !activeNode) return;
+function submitFreeAnswer() {
+  if (busy || !activeNode) return;
   const text = $('#answer').value.trim();
   if (text.length < 4) {
     toast('请写下至少4个字的处理方式。');
@@ -152,25 +152,19 @@ async function submitFreeAnswer() {
   }
   setBusy(true);
   try {
-    const result = await post('/api/story/open', {
-      session_id: sessionId,
-      node_id: activeNode.id,
-      text
-    });
-    if (result.need_confirm && !result.target) {
+    const applied = StaticEngine.applyFreeAnswer(config, flags, activeNode.id, text);
+    if (!applied) {
       setBusy(false);
-      toast('后端无法从这段回答确定行动，请补充明确的处理方式。');
-    } else if (result.status === 'finished') {
-      showReview(result.review);
-    } else if (result.next_node) {
-      render(result.next_node, result.progress || {});
-    } else {
-      setBusy(false);
-      toast('后端没有返回下一步节点。');
+      toast('这段回答暂时无法判断行动，请补上：核实、继续联系、保存举报、删除或分享。');
+      return;
     }
+    flags = applied.flags;
+    history.push({ node: activeNode.id, answer: text, target: applied.target });
+    if (String(applied.target).startsWith('E')) finish(applied.target);
+    else render(nodeById(applied.target));
   } catch (error) {
     setBusy(false);
-    toast(`自由回答未提交：${error.message}`);
+    toast(`自由回答处理失败：${error.message}`);
   }
 }
 
@@ -178,14 +172,30 @@ function toast(message) {
   const element = $('#toast');
   element.textContent = message;
   element.classList.add('show');
-  setTimeout(() => element.classList.remove('show'), 2600);
+  setTimeout(() => element.classList.remove('show'), 2800);
 }
 
 function returnToCover() {
-  sessionId = null;
   activeNode = null;
   bg('cover');
   screen('cover');
+}
+
+async function boot() {
+  setBusy(true);
+  try {
+    const response = await fetch(GRAPH_URL, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    config = await response.json();
+    ready = true;
+    bg('cover');
+    screen('cover');
+    setBusy(false);
+    setText($('#status'), '规则引擎已就绪，点击进入故事');
+  } catch (error) {
+    setBusy(false);
+    toast(`加载剧情配置失败：${error.message}`);
+  }
 }
 
 $('#start').onclick = startSession;
@@ -193,3 +203,6 @@ $('#again').onclick = startSession;
 $('#submitAnswer').onclick = submitFreeAnswer;
 $('#restartTop').onclick = returnToCover;
 bg('cover');
+screen('cover');
+setBusy(true);
+boot();
