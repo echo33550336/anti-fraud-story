@@ -1,0 +1,2663 @@
+{
+  "version": "09-2026-10-30",
+  "meta": {
+    "title": "终场前的一张票",
+    "source_of_truth": "../08-完整15步剧情与16结局.md",
+    "nodes": 15,
+    "endings": 16,
+    "dimensions": [
+      "funds",
+      "authorization",
+      "privacy",
+      "stop_contact",
+      "official_help",
+      "source_verification",
+      "evidence"
+    ],
+    "score": {
+      "base": 96,
+      "share_bonus": 4,
+      "denominator": 210,
+      "weights": {
+        "funds": 21,
+        "authorization": 19,
+        "privacy": 17,
+        "stop_contact": 15,
+        "official_help": 13,
+        "source_verification": 11,
+        "evidence": 9
+      },
+      "share_bonus_requires_all_dimensions_2": true
+    },
+    "open_answer": {
+      "nodes": [
+        "N12",
+        "N13",
+        "N14"
+      ],
+      "intent_only": true,
+      "require_player_confirmation": true,
+      "uncertain_requires_confirmation": true,
+      "undecided_option_id": "B"
+    },
+    "simulation_only": true
+  },
+  "acts": [
+    {
+      "id": "A1",
+      "title": "第一幕·大剧院售票处",
+      "time": "18:30"
+    },
+    {
+      "id": "A2",
+      "title": "第二幕·员工票来电",
+      "time": "18:40"
+    },
+    {
+      "id": "A3",
+      "title": "第3幕",
+      "time": "15:52"
+    },
+    {
+      "id": "A4",
+      "title": "第4幕",
+      "time": "15:58"
+    },
+    {
+      "id": "A5",
+      "title": "第5幕",
+      "time": "16:06"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "N01",
+      "act": "A1",
+      "time": "18:30",
+      "scene": "10月27日傍晚，林夏到市中心大剧院买10月31日的《南瓜夜·尖叫音乐会》门票，在售票窗口意外重逢大学同学小岚。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "[虚构演出信息]：10月31日19:30开场，VIP A区3排。"
+        },
+        {
+          "speaker": "林夏",
+          "text": "你在这里工作？这张票是怎么回事？"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "A",
+        "B"
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "先核对票面日期和赠票说明",
+          "response": "票面写着10月31日，右下角标注“员工内部赠票”。你先记下了这两个信息。",
+          "effects": {
+            "flags": {}
+          }
+        },
+        {
+          "id": "B",
+          "text": "先收下票，继续和小岚叙旧",
+          "response": "你收下了赠票。多年未见的熟悉感，让这份好意暂时没有引起疑问。",
+          "effects": {
+            "flags": {}
+          }
+        }
+      ],
+      "next": "N02"
+    },
+    {
+      "id": "N02",
+      "act": "A1",
+      "time": "18:33",
+      "scene": "售票处临时有人叫走小岚。林夏把自己的手机号写在便签上留在柜台；小岚还没来得及写下自己的号码。",
+      "lines": [
+        {
+          "speaker": "小岚",
+          "text": "你写好放这儿，我忙完再看。"
+        },
+        {
+          "speaker": "林夏",
+          "text": "便签还留在柜台上，她之后能看到我的号码。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "先凭熟悉感相信她，等她之后联系",
+          "response": "你没有进一步确认身份和赠票规则，先把票收好了。",
+          "effects": {
+            "flags": {
+              "identity_confirmed": false
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "核对工牌和赠票来源再离开",
+          "response": "工牌信息与售票窗口相符；你确认了眼前的人，却还没有核实赠票能否转赠。",
+          "effects": {
+            "flags": {
+              "identity_confirmed": true
+            }
+          }
+        }
+      ],
+      "next": "N03"
+    },
+    {
+      "id": "N03",
+      "act": "A1",
+      "time": "18:38",
+      "scene": "林夏离开剧院后接到陌生来电。对方自称票务部员工，准确报出演出、座位和经办人，却称内部赠票违规，要求补交900元。",
+      "lines": [
+        {
+          "speaker": "票务售后",
+          "text": "我是票务部0352。内部票不能转赠，补900元就能替小岚把事情压下去。"
+        },
+        {
+          "speaker": "林夏",
+          "text": "他知道票面细节，但我还不知道他有没有处理权限。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "加“票务0352”微信，继续听他解释",
+          "response": "对方发来工作牌照片和个人收款码。信息看起来完整，身份和收款资格仍未核实。",
+          "effects": {
+            "flags": {
+              "contact_closed": false
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "挂断并自行联系剧院核实",
+          "response": "你结束了这次联系，没有按陌生人的要求转账，准备通过自己找到的渠道核实。",
+          "effects": {
+            "flags": {
+              "contact_closed": true
+            }
+          }
+        }
+      ],
+      "next": "N04"
+    },
+    {
+      "id": "N04",
+      "act": "A2",
+      "time": "18:42",
+      "scene": "你要分开核实两件事：员工赠票能否转给朋友，以及来电者是否有权要求补差。票面真实不能证明来电身份。",
+      "lines": [
+        {
+          "speaker": "林夏",
+          "text": "我应该自己找到剧院的官方联系方式。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "C",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "只确认赠票记录是否存在",
+          "response": "你确认了票的来源，但还没有核实赠票规则和来电者权限。",
+          "effects": {
+            "flags": {
+              "n04": "B",
+              "n04_scope": "ticket_only"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "只看对方发来的工作牌和票面照片",
+          "response": "照片中的信息看起来完整，但材料仍由来电者提供，不能独立证明其身份。",
+          "effects": {
+            "flags": {
+              "n04": "C",
+              "n04_scope": "provided_only"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "通过官方入口同时核实赠票和来电权限",
+          "response": "你把赠票规则与工号权限分开查询，等待官方答复。",
+          "effects": {
+            "flags": {
+              "n04": "A",
+              "n04_scope": "full"
+            }
+          }
+        }
+      ],
+      "next": "N05"
+    },
+    {
+      "id": "N05",
+      "act": "A2",
+      "time": "18:46",
+      "scene": "对方把会话转给“审核专员”，要求核对票务登记资料，并称不按时处理赠票就会作废。页面只有虚构占位字段，没有真实输入框。",
+      "lines": [
+        {
+          "speaker": "审核专员",
+          "text": "核对票务登记资料，请通过这个模拟入口提交。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "提交模拟资料并按要求转首笔900元",
+          "response": "演练记录了资料提交和首笔模拟转账。对方随后称备注不符，要求再转一笔。",
+          "effects": {
+            "flags": {
+              "data_submitted": true,
+              "payment_made": true
+            },
+            "increments": {
+              "ticket_loss": 900
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝提交资料和付款，保留请求待核",
+          "response": "你没有提交资料或转账，先把这个入口留作待核实请求。",
+          "effects": {
+            "flags": {
+              "data_submitted": false
+            }
+          }
+        }
+      ],
+      "next": "N06"
+    },
+    {
+      "id": "N06",
+      "act": "A2",
+      "time": "18:50",
+      "scene": "对方称首笔款项“没有备注”，承诺稍后原路退回，又要求再转900元，并让你提供验证码完成票务核验。",
+      "lines": [
+        {
+          "speaker": "票务专员",
+          "text": "再转900元并授权验证码，两笔一起处理，第一笔就能退回。"
+        },
+        {
+          "speaker": "林夏",
+          "text": "“再转一次就退”没有解释清楚钱去了哪里。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "A",
+        "B"
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "拒绝验证码授权和第二笔转账",
+          "response": "你没有继续交出验证码，也没有再转账；已付金额仍需处理。",
+          "effects": {
+            "flags": {
+              "auth_granted": false
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "提供模拟验证码并再转900元",
+          "response": "演练记录了验证码授权和第二笔模拟转账；对方随后又提出新的付款理由。",
+          "effects": {
+            "flags": {
+              "auth_granted": true,
+              "payment_made": true
+            },
+            "increments": {
+              "ticket_loss": 900
+            }
+          }
+        }
+      ],
+      "next": "N07"
+    },
+    {
+      "id": "N07",
+      "act": "A3",
+      "time": "18:54",
+      "scene": "第三次付款要求出现：对方称前两笔仍未入账，建议拆分转账。具体金额随已发生的模拟转账显示。",
+      "lines": [
+        {
+          "speaker": "林夏",
+          "text": "我想把这件事赶快办完，但钱的方向好像不对。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "继续模拟转账，想把前两笔一起退回",
+          "response": "演练记录了又一次模拟转账。前两笔并未因此自动退回，资金结果仍待处理。",
+          "effects": {
+            "flags": {
+              "payment_made": true
+            },
+            "increments": {"ticket_loss": 900}
+          }
+        },
+        {
+          "id": "A",
+          "text": "停止转账，改用官方渠道处理",
+          "response": "你没有继续付款，开始把已经发生的事与新的付款要求分开处理。",
+          "effects": {
+            "flags": {
+              "payment_made": false
+            }
+          }
+        }
+      ],
+      "next": "N08"
+    },
+    {
+      "id": "N08",
+      "act": "A3",
+      "time": "次日",
+      "scene": "几天后，假“小岚”通过便签上的号码联系你，先送来128元山货，再提到188元腊味和3000元进货周转。每笔都要你自己决定。",
+      "lines": [
+        {
+          "speaker": "假“小岚”",
+          "text": "前两单都发货了。这次差3000元周转，月底给你分红。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "C",
+        "A",
+        "B"
+      ],
+      "options": [
+        {
+          "id": "C",
+          "text": "继续相信她，考虑把生意做大",
+          "response": "你继续留在这段联系里。前面的少量交易没有证明投资承诺真实。",
+          "effects": {
+            "flags": {"n08": "C", "data_submitted": true, "auth_granted": true, "payment_made": true},
+            "increments": {"shop_loss": 316}
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝买货和投资，停止联系并核实本人",
+          "response": "你没有继续转账，先通过独立渠道确认账号是不是小岚本人。",
+          "effects": {
+            "flags": {
+              "n08": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "只买128元山货，暂缓后续决定",
+          "response": "你支付了一笔小额模拟订单并留下收货信息；第二单和投资仍未决定。",
+          "effects": {
+            "flags": {"n08": "B", "data_submitted": true, "payment_made": true},
+            "increments": {"shop_loss": 128}
+          }
+        }
+      ],
+      "next": "N09"
+    },
+    {
+      "id": "N09",
+      "act": "A3",
+      "time": "次日",
+      "scene": "回看你是否把个人资料交给了陌生入口。已经发生的提交不会因为后来识破骗局而消失。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "按演练记录确认资料是否提交，再选择是否采取保护措施。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "A",
+        "B"
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "按模拟资料暴露情况启动适用保护，限制继续扩散",
+          "response": "你开始处理资料暴露；历史仍保留为曾经发生。",
+          "effects": {
+            "flags": {
+              "n09": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "暂不处理这次资料暴露，先把其他事办完",
+          "response": "这项资料风险仍列在未完成事项里。",
+          "effects": {
+            "flags": {
+              "n09": "B"
+            }
+          }
+        }
+      ],
+      "next": "N10"
+    },
+    {
+      "id": "N10",
+      "act": "A4",
+      "time": "次日",
+      "scene": "回看是否向假票务提供过验证码或账号授权。若已授权，页面只展示抽象的模拟处置卡。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "验证码可能让对方继续操作；没有看到余额变化，不等于授权风险已解除。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "暂不处理授权，只看有没有异常消息",
+          "response": "相关权限风险仍待处理。",
+          "effects": {
+            "flags": {
+              "n10": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "通过独立查到的适用入口处理模拟授权风险",
+          "response": "授权风险已采取处理动作，历史暴露仍记录。",
+          "effects": {
+            "flags": {
+              "n10": "A"
+            }
+          }
+        }
+      ],
+      "next": "N11"
+    },
+    {
+      "id": "N11",
+      "act": "A4",
+      "time": "次日",
+      "scene": "官方查询结果与模拟交易记录放在一起。假“小岚”提出3000元周转投资，赠票核验结果与投资请求分开判断。",
+      "lines": [
+        {
+          "speaker": "林夏",
+          "text": "赠票是真的，不代表要求我转账的人有权处理它。"
+        },
+        {
+          "speaker": "系统",
+          "text": "只展示与先前选择相符的查询结果。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "再模拟投入3000元，期待前款一起返还",
+          "response": "演练记录了追加3000元模拟投资；先前款项没有因此自动退回。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {"shop_loss": 3000}
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝投资，停止后续转账并处理已有风险",
+          "response": "你没有继续投入；已发生的模拟金额仍需通过正规渠道跟进。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ],
+      "next": "N12"
+    },
+    {
+      "id": "N12",
+      "act": "A4",
+      "time": "16:03",
+      "scene": "通过既有联络渠道联系到小岚。前段已确认其身份者听到进一步解释；尚未确认者现在获得剧情中的交叉确认。",
+      "lines": [
+        {
+          "speaker": "小岚",
+          "text": "票是我送的，那个让你做额外操作的人不是我找的。你先把事情处理好，晚上的事可以以后再说。"
+        },
+        {
+          "speaker": "林夏",
+          "text": "我怕怀疑错了人，也怕因为喜欢就不敢问。"
+        },
+        {
+          "speaker": "小岚",
+          "text": "你愿意问清楚，我就认真回答。"
+        }
+      ],
+      "prompt": "接下来，你准备向哪个渠道、怎样说明这次可疑联系？",
+      "ui_option_order": [
+        "B",
+        "A",
+        "C"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "找到正规入口，但只说一句“赠票出问题了”",
+          "response": "渠道找对了，处理者仍不知道你是否提交资料、授权或付款。",
+          "effects": {
+            "flags": {
+              "n12": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "向独立查到的适用正规入口完整说明已做与未完成的事",
+          "response": "你交代了时间、来源、实际操作及待处理问题。说明情况不会替你执行之前未做的补救。",
+          "effects": {
+            "flags": {
+              "n12": "A"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "转向陌生消息里承诺快速解决的入口",
+          "response": "你想尽快解决，却还没有独立核验这次求助入口。",
+          "effects": {
+            "flags": {
+              "n12": "C"
+            }
+          }
+        }
+      ],
+      "next": "N13",
+      "open_answer": {
+        "enabled": true,
+        "mode": "intent_mapping",
+        "confirmation_required": true,
+        "allowed_options": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    },
+    {
+      "id": "N13",
+      "act": "A5",
+      "time": "16:06",
+      "scene": "消息渐渐安静。你要决定怎样整理这次经过。",
+      "lines": [
+        {
+          "speaker": "阿舟",
+          "text": "留下能说明事情的部分就好，别把自己的隐私到处转发。"
+        }
+      ],
+      "prompt": "你会保留、整理哪些线索？",
+      "ui_option_order": [
+        "C",
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "C",
+          "text": "模拟清空必要记录，让这件事尽快过去",
+          "response": "屏幕清静了，回看经过时却少了关键部分。",
+          "effects": {
+            "flags": {
+              "n13": "C"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "只留一张最后的截图，不整理前后对应",
+          "response": "你保留了部分材料，关键操作和时间还缺对应。",
+          "effects": {
+            "flags": {
+              "n13": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "整理必要来源、时间、操作和相关记录，遮蔽无关隐私",
+          "response": "碎片被整理成可供核查的经过。",
+          "effects": {
+            "flags": {
+              "n13": "A"
+            }
+          }
+        }
+      ],
+      "next": "N14",
+      "open_answer": {
+        "enabled": true,
+        "mode": "intent_mapping",
+        "confirmation_required": true,
+        "allowed_options": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    },
+    {
+      "id": "N14",
+      "act": "A5",
+      "time": "16:10",
+      "scene": "安全问题与后续事项已各自列明，小岚再次询问你的意愿。",
+      "lines": [
+        {
+          "speaker": "小岚",
+          "text": "那两张票，是想认真约你一次。我喜欢你，你不用今天就回答。"
+        },
+        {
+          "speaker": "林夏",
+          "text": "如果我今天不来呢？"
+        },
+        {
+          "speaker": "小岚",
+          "text": "可以改天。如果你没有相同的心意，也可以直接告诉我。"
+        }
+      ],
+      "prompt": "你想怎样回应这份邀请？",
+      "ui_option_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "我愿意去，我们再确认公共入口和时间",
+          "response": "小岚：好，按我们确认过的安排见。",
+          "effects": {
+            "flags": {
+              "n14": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "我想见你，但今天想先处理完事情，改天可以吗",
+          "response": "小岚：可以，不急着今天。你把见面改到另一天，也错过了今晚的演出。",
+          "effects": {
+            "flags": {
+              "n14": "B"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "谢谢你，但我没有相同的心意，今晚也不赴约",
+          "response": "小岚：明白，谢谢你说清楚。你选择不赴当晚的演出。",
+          "effects": {
+            "flags": {
+              "n14": "C"
+            }
+          }
+        }
+      ],
+      "next": "N15",
+      "open_answer": {
+        "enabled": true,
+        "mode": "intent_mapping",
+        "confirmation_required": true,
+        "allowed_options": [
+          "A",
+          "B",
+          "C"
+        ],
+        "undecided_option_id": "B"
+      }
+    },
+    {
+      "id": "N15",
+      "act": "A5",
+      "time": "次日09:00",
+      "scene": "次日，票面、约定和处理记录出现在同一屏。任何未完成风险仍保留，不因演出或告白自动消失。",
+      "lines": [
+        {
+          "speaker": "林夏",
+          "text": "我可以认真对待一份好意，也可以认真核实每一个请求。"
+        }
+      ],
+      "prompt": null,
+      "ui_option_order": [
+        "B",
+        "A"
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "核对进展后，把预审脱敏清单分享给愿意接收的人",
+          "response": "你分享的是核验方法，不是他人的隐私和未经证实的指控。",
+          "effects": {
+            "flags": {
+              "n15": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "核对处理进展，留下自己的核验清单",
+          "response": "这份清单先留给下一次需要判断的自己。",
+          "effects": {
+            "flags": {
+              "n15": "A"
+            }
+          }
+        }
+      ],
+      "next": "REVIEW"
+    }
+  ],
+  "variants": [
+    {
+      "node": "N05",
+      "when": {
+        "contact_closed": true
+      },
+      "scene": "票务来电已被拦截。现在显示的是与那次来电有关的资料请求摘要。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "你此前已经结束可疑联系。现在显示的是已拦截资料请求摘要。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "保留拦截状态，继续查询订单",
+          "response": "你没有重新开放入口，也没有提交资料。",
+          "effects": {
+            "flags": {
+              "data_submitted": false
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "查看为什么这份资料请求值得警惕",
+          "response": "你查看了请求范围和用途。",
+          "effects": {
+            "flags": {
+              "data_submitted": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N06",
+      "when": {
+        "contact_closed": true
+      },
+      "scene": "票务来电已被拦截。后续验证码授权请求只作为摘要展示。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "你已结束可疑联系，审核专员的请求只出现在拦截摘要里。"
+        }
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "查看这类授权会涉及哪些信息",
+          "response": "你读完授权范围提示，未授予权限。",
+          "effects": {
+            "flags": {
+              "auth_granted": false
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "保持拒绝，不查看这份请求",
+          "response": "拒绝仍有效，未发生授权。",
+          "effects": {
+            "flags": {
+              "auth_granted": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N07",
+      "when": {
+        "contact_closed": true
+      },
+      "scene": "票务付款请求已被拦截，没有发生新的转账。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "这项付款请求已经被拦截，只作为一张异常请求卡展示。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "保持拦截，继续处理自己的订单",
+          "response": "没有付款，也没有重新接触对方。",
+          "effects": {
+            "flags": {
+              "payment_made": false
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "查看先付款要求与正常处理有什么冲突",
+          "response": "你把异常请求记进核验清单。",
+          "effects": {
+            "flags": {
+              "payment_made": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N07",
+      "when": {
+        "contact_closed": false,
+        "ticket_loss": 0
+      },
+      "scene": "此前没有模拟转账。票务专员第一次提出900元补差，称付款后赠票才会生效。",
+      "lines": [
+        {
+          "speaker": "票务专员",
+          "text": "现在转900元，票就能按你的名字保留。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "模拟转900元保住赠票",
+          "response": "演练记录了900元模拟转账；没有连接真实支付。",
+          "effects": {
+            "flags": {
+              "payment_made": true
+            },
+            "increments": {
+              "ticket_loss": 900
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝付款，转向官方核验",
+          "response": "你没有继续转账，保留了独立核验的机会。",
+          "effects": {
+            "flags": {
+              "payment_made": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N07",
+      "when": {
+        "contact_closed": false,
+        "ticket_loss": 900
+      },
+      "scene": "首笔模拟转账后，对方称备注有误，要求再转900元后一起退款。",
+      "lines": [
+        {
+          "speaker": "票务专员",
+          "text": "再转900元，两笔才能一起退回。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "按要求再模拟转900元",
+          "response": "演练又记录了900元模拟转账；先前款项没有因此退回。",
+          "effects": {
+            "flags": {
+              "payment_made": true
+            },
+            "increments": {
+              "ticket_loss": 900
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "停止转账并保留凭证",
+          "response": "你停止了后续转账，先前已发生的金额仍需处理。",
+          "effects": {
+            "flags": {
+              "payment_made": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N07",
+      "when": {
+        "contact_closed": false,
+        "ticket_loss": 1800
+      },
+      "scene": "两笔模拟转账后，对方称系统挂起，建议拆分付款，累计将达到3000元。",
+      "lines": [
+        {
+          "speaker": "票务专员",
+          "text": "再拆成几笔转，系统就能解冻并退款。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "继续模拟转账凑到3000元",
+          "response": "演练累计记录了3000元模拟转账；退款承诺没有兑现。",
+          "effects": {
+            "flags": {
+              "payment_made": true
+            },
+            "increments": {
+              "ticket_loss": 1200
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "停下，不再跟随解冻要求",
+          "response": "你没有继续转账，已发生的模拟损失保留在记录中。",
+          "effects": {
+            "flags": {
+              "payment_made": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N08",
+      "when": {
+        "contact_closed": true
+      },
+      "scene": "票务来电已拦截。几天后，另一个账号通过便签上的号码联系林夏，自称小岚并推销山货；这是新的联系，身份仍需核实。",
+      "lines": [
+        {
+          "speaker": "假“小岚”",
+          "text": "128元尝尝山货吧，后面还有腊味和进货周转的机会。"
+        }
+      ],
+      "options": [
+        {
+          "id": "C",
+          "text": "买两单山货，继续考虑投资",
+          "response": "你模拟支付了128元和188元，并提供收货信息与验证码；投资请求仍待决定。",
+          "effects": {
+            "flags": {
+              "n08": "C",
+              "data_submitted": true,
+              "auth_granted": true,
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 316
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝买货和投资，核实对方身份",
+          "response": "你没有继续付款，先通过独立渠道核实这个账号是否属于小岚。",
+          "effects": {
+            "flags": {
+              "n08": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "只买128元山货，暂缓后续决定",
+          "response": "你模拟支付了128元并留下收货信息；188元订单和投资请求尚未决定。",
+          "effects": {
+            "flags": {
+              "n08": "B",
+              "data_submitted": true,
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 128
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N08",
+      "when": {
+        "contact_closed": false,
+        "source_result": "provided_only"
+      },
+      "scene": "你只看过对方提供的票务材料，几天后这个账号又以“小岚”的身份联系你。她借登记资料为由索要身份信息和验证码。",
+      "lines": [
+        {
+          "speaker": "假“小岚”",
+          "text": "把身份证照片、地址和验证码发我，我帮你核一下登记信息。"
+        }
+      ],
+      "prompt": "你会如何处理这项资料请求？",
+      "options": [
+        {
+          "id": "C",
+          "text": "继续提供资料并购买两单山货",
+          "response": "模拟记录显示资料已提交，也发生了两笔小额交易；这不能证明账号属于小岚。",
+          "effects": {
+            "flags": {
+              "n08": "C",
+              "data_submitted": true,
+              "auth_granted": true,
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 316
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝提供资料，停止联系并核实本人",
+          "response": "你没有提交资料或付款，先通过独立渠道确认账号身份。",
+          "effects": {
+            "flags": {
+              "n08": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "提交模拟身份资料和验证码，但不转账",
+          "response": "演练记录了资料和验证码暴露，没有记录资金转出。",
+          "effects": {
+            "flags": {
+              "n08": "B",
+              "data_submitted": true,
+              "auth_granted": true,
+              "payment_made": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N09",
+      "when": {
+        "data_submitted": false
+      },
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "记录显示没有提交模拟敏感资料，这次无需补救资料暴露。"
+        }
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "核对一次记录，再继续",
+          "response": "你确认没有资料提交事件。",
+          "effects": {
+            "flags": {
+              "n09": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "依据未提交记录直接继续",
+          "response": "无需为不存在的暴露额外操作。",
+          "effects": {
+            "flags": {
+              "n09": "B"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N10",
+      "when": {
+        "auth_granted": false
+      },
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "记录显示未授予可疑权限。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "依据未授权记录继续",
+          "response": "未授权状态保持。",
+          "effects": {
+            "flags": {
+              "n10": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "查看权限记录确认一次",
+          "response": "没有授权事件需要补救。",
+          "effects": {
+            "flags": {
+              "n10": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N11",
+      "when": {
+        "source_result": "full",
+        "payment_made": false
+      },
+      "lines": [
+        {
+          "speaker": "虚构官方入口",
+          "text": "分别回传赠票记录和来电权限核验结果。"
+        },
+        {
+          "speaker": "系统",
+          "text": "记录显示未发生模拟付款。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "模拟投入3000元，继续相信分红承诺",
+          "response": "演练记录了3000元模拟投资；没有连接真实支付。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 3000
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "核对交易记录，确认没有模拟异常付款",
+          "response": "没有付款事件需要止损。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N11",
+      "when": {
+        "source_result": "full",
+        "payment_made": true
+      },
+      "lines": [
+        {
+          "speaker": "虚构官方入口",
+          "text": "分别回传赠票记录和来电权限核验结果。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "再投3000元，期待前款一起返还",
+          "response": "演练记录了追加3000元模拟投资；先前款项没有自动退回。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 3000
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "按模拟资金事件执行适用的停止后续与风险处理动作",
+          "response": "已采取模拟资金处理动作；结果仍需跟进，不承诺追回。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N11",
+      "when": {
+        "source_result": "ticket_only",
+        "payment_made": false
+      },
+      "lines": [
+        {
+          "speaker": "虚构官方入口",
+          "text": "仅确认赠票记录存在，来电权限仍未核实。"
+        },
+        {
+          "speaker": "系统",
+          "text": "记录显示未发生模拟付款。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "模拟投入3000元，继续相信分红承诺",
+          "response": "演练记录了3000元模拟投资；没有连接真实支付。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 3000
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "核对交易记录，确认没有模拟异常付款",
+          "response": "没有付款事件需要止损。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N11",
+      "when": {
+        "source_result": "ticket_only",
+        "payment_made": true
+      },
+      "lines": [
+        {
+          "speaker": "虚构官方入口",
+          "text": "仅确认赠票记录存在，来电权限仍未核实。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "再投3000元，期待前款一起返还",
+          "response": "演练记录了追加3000元模拟投资；先前款项没有自动退回。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 3000
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "按模拟资金事件执行适用的停止后续与风险处理动作",
+          "response": "已采取模拟资金处理动作；结果仍需跟进，不承诺追回。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N11",
+      "when": {
+        "source_result": "provided_only",
+        "payment_made": false
+      },
+      "lines": [
+        {
+          "speaker": "虚构官方入口",
+          "text": "没有独立查询结果；目前仍是对方提供的票面图片。"
+        },
+        {
+          "speaker": "系统",
+          "text": "记录显示未发生模拟付款。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "模拟投入3000元，继续相信分红承诺",
+          "response": "演练记录了3000元模拟投资；没有连接真实支付。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 3000
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "核对交易记录，确认没有模拟异常付款",
+          "response": "没有付款事件需要止损。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N11",
+      "when": {
+        "source_result": "provided_only",
+        "payment_made": true
+      },
+      "lines": [
+        {
+          "speaker": "虚构官方入口",
+          "text": "没有独立查询结果；目前仍是对方提供的票面图片。"
+        }
+      ],
+      "options": [
+        {
+          "id": "B",
+          "text": "再投3000元，期待前款一起返还",
+          "response": "演练记录了追加3000元模拟投资；先前款项没有自动退回。",
+          "effects": {
+            "flags": {
+              "n11": "B",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 3000
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "按模拟资金事件执行适用的停止后续与风险处理动作",
+          "response": "已采取模拟资金处理动作；结果仍需跟进，不承诺追回。",
+          "effects": {
+            "flags": {
+              "n11": "A"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N12",
+      "when": {
+        "ticket_loss": 3000
+      },
+      "scene": "票务骗局的模拟损失已达3000元。随后，假“小岚”声称能帮忙追回，要求先付900元服务费；这不是正规追款渠道。",
+      "lines": [
+        {
+          "speaker": "陌生求助联系人",
+          "text": "先交900元服务费，我就帮你追回票务那边的钱。"
+        }
+      ],
+      "prompt": "你会如何处理这条追款承诺？",
+      "options": [
+        {
+          "id": "B",
+          "text": "联系正规渠道，但没有说明全部经过",
+          "response": "你没有支付服务费，但求助说明仍不完整。",
+          "effects": {
+            "flags": {
+              "n12": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "拒绝付费，向正规渠道完整说明并举报",
+          "response": "你没有支付追款服务费，并整理了已发生的转账与联系记录。",
+          "effects": {
+            "flags": {
+              "n12": "A"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "相信承诺，模拟支付900元服务费",
+          "response": "演练记录了第二次诈骗中的模拟付款；追回承诺没有得到验证。",
+          "effects": {
+            "flags": {
+              "n12": "C",
+              "payment_made": true
+            },
+            "increments": {
+              "recovery_loss": 900
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N12",
+      "when": {
+        "ticket_loss": 0,
+        "shop_loss": 3316
+      },
+      "scene": "假“小岚”已收到316元山货款和3000元周转款，随后又称物流需要保证金。新增要求累计为1684元，达到本作5000元损失阈值。",
+      "lines": [
+        {
+          "speaker": "假“小岚”",
+          "text": "物流还要补几笔保证金，累计1684元；补齐就能发分红。"
+        }
+      ],
+      "prompt": "你会如何处理这笔新增保证金？",
+      "options": [
+        {
+          "id": "B",
+          "text": "暂缓付款，只向正规渠道说明部分情况",
+          "response": "你没有继续付款，但求助说明仍不完整。",
+          "effects": {
+            "flags": {
+              "n12": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "停止付款，保存记录并完整求助",
+          "response": "你没有继续付款，已整理投资和物流要求的记录。",
+          "effects": {
+            "flags": {
+              "n12": "A"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "继续相信承诺，模拟支付累计1684元保证金",
+          "response": "演练累计损失达到5000元，分红承诺仍未兑现。",
+          "effects": {
+            "flags": {
+              "n12": "C",
+              "payment_made": true
+            },
+            "increments": {
+              "shop_loss": 1684
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N12",
+      "when": {
+        "identity_confirmed": false,
+        "contact_closed": false,
+        "ticket_loss": 0,
+        "shop_loss": 0,
+        "recovery_loss": 0
+      },
+      "scene": "你收到一个自称小岚的联系，但尚未通过独立方式确认账号身份。处理可疑请求时，也要分清联系人核实与风险报告。",
+      "lines": [
+        {
+          "speaker": "自称小岚的联系人",
+          "text": "我是小岚。我们以前的事你还记得吗？"
+        }
+      ],
+      "prompt": "你准备怎样核实联系人并说明可疑请求？",
+      "options": [
+        {
+          "id": "B",
+          "text": "不核实账号，只向正规入口简略说明",
+          "response": "渠道找对了，但联系人身份和经过仍未核清。",
+          "effects": {
+            "flags": {
+              "n12": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "先独立核实本人，再完整说明经过",
+          "response": "你通过独立渠道确认了联系人身份，也完整说明已做和未做的操作。",
+          "effects": {
+            "flags": {
+              "n12": "A",
+              "identity_confirmed": true
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "转向陌生人承诺的快速解决入口",
+          "response": "你还没有核实新的求助入口。",
+          "effects": {
+            "flags": {
+              "n12": "C"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N12",
+      "when": {
+        "identity_confirmed": false,
+        "contact_closed": true,
+        "ticket_loss": 0,
+        "shop_loss": 0,
+        "recovery_loss": 0
+      },
+      "scene": "票务骗局已被报告，留言纸随后被收走归档。真小岚没有再联系上林夏；他仍需完成必要的风险说明。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "当前没有来自真小岚的联络记录。"
+        }
+      ],
+      "prompt": "你会怎样完成这次风险说明？",
+      "options": [
+        {
+          "id": "B",
+          "text": "找到正规入口，但只作简短说明",
+          "response": "渠道正确，关键操作和待处理事项仍不完整。",
+          "effects": {
+            "flags": {
+              "n12": "B"
+            }
+          }
+        },
+        {
+          "id": "A",
+          "text": "向正规入口完整说明并报告",
+          "response": "你说明了可疑来电、实际操作和待处理事项。",
+          "effects": {
+            "flags": {
+              "n12": "A"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "相信陌生人的快速解决承诺",
+          "response": "你尚未独立核实新的求助入口。",
+          "effects": {
+            "flags": {
+              "n12": "C"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N14",
+      "when": {
+        "identity_confirmed": false,
+        "contact_closed": false,
+        "n12": "B",
+        "ticket_loss": 0,
+        "shop_loss": 0,
+        "recovery_loss": 0
+      },
+      "scene": "一个账号自称小岚并提出见面。你还没有用共同经历或独立渠道确认这个账号。",
+      "lines": [
+        {
+          "speaker": "自称小岚的联系人",
+          "text": "我想和你见面；如果你愿意，我们再约时间。"
+        }
+      ],
+      "prompt": "你会怎样处理这份邀请？",
+      "options": [
+        {
+          "id": "A",
+          "text": "用共同经历核验身份，确认后再赴约",
+          "response": "身份核验完成；是否赴约由你决定。",
+          "effects": {
+            "flags": {
+              "n14": "A",
+              "identity_confirmed": true
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "先通过可信联系人核验，今晚暂缓赴约",
+          "response": "你没有仓促赴约，也没有直接否定对方。",
+          "effects": {
+            "flags": {
+              "n14": "B"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "不核实，直接把账号拉黑",
+          "response": "你没有确认对方身份，就结束了联系。",
+          "effects": {
+            "flags": {
+              "n14": "C"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N14",
+      "when": {
+        "identity_confirmed": false,
+        "contact_closed": false,
+        "n12": "C",
+        "ticket_loss": 0,
+        "shop_loss": 0,
+        "recovery_loss": 0
+      },
+      "scene": "一个账号自称小岚并提出见面。你还没有用共同经历或独立渠道确认这个账号。",
+      "lines": [
+        {
+          "speaker": "自称小岚的联系人",
+          "text": "我想和你见面；如果你愿意，我们再约时间。"
+        }
+      ],
+      "prompt": "你会怎样处理这份邀请？",
+      "options": [
+        {
+          "id": "A",
+          "text": "用共同经历核验身份，确认后再赴约",
+          "response": "身份核验完成；是否赴约由你决定。",
+          "effects": {
+            "flags": {
+              "n14": "A",
+              "identity_confirmed": true
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "先通过可信联系人核验，今晚暂缓赴约",
+          "response": "你没有仓促赴约，也没有直接否定对方。",
+          "effects": {
+            "flags": {
+              "n14": "B"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "不核实，直接把账号拉黑",
+          "response": "你没有确认对方身份，就结束了联系。",
+          "effects": {
+            "flags": {
+              "n14": "C"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "node": "N14",
+      "when": {
+        "identity_confirmed": false,
+        "contact_closed": true,
+        "n12": "A",
+        "ticket_loss": 0,
+        "shop_loss": 0,
+        "recovery_loss": 0
+      },
+      "scene": "票务骗局已被报告，留言纸也已归档。真小岚没有联系上你，你仍可按自己的计划看演出。",
+      "lines": [
+        {
+          "speaker": "系统",
+          "text": "没有证据表明真小岚知道你的联系方式。"
+        }
+      ],
+      "prompt": "你接下来准备怎样安排今晚？",
+      "options": [
+        {
+          "id": "A",
+          "text": "按原计划看演出，散场后不再等待",
+          "response": "你看完演出，但没有等到真小岚。",
+          "effects": {
+            "flags": {
+              "n14": "A"
+            }
+          }
+        },
+        {
+          "id": "B",
+          "text": "把见面和演出都改到另一天",
+          "response": "你选择离开，今晚没有赴约。",
+          "effects": {
+            "flags": {
+              "n14": "B"
+            }
+          }
+        },
+        {
+          "id": "C",
+          "text": "结束等待，直接离开剧院",
+          "response": "你没有再等待可能不会到来的联系。",
+          "effects": {
+            "flags": {
+              "n14": "C"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "endings": [
+    {
+      "id": "R01",
+      "title": "运气好，不是做对了",
+      "when": {
+        "default": true
+      },
+      "narration": "这次没有发生模拟资金损失，但你没有完成关键核验或留存完整线索。没被骗只是本次结果，不能当作识别方法。",
+      "next_step": "下次仍按独立渠道核验；遇到可疑联系，保存必要记录并向正规渠道报告。",
+      "reference_score": 88,
+      "priority": 999
+    },
+    {
+      "id": "R02",
+      "title": "最后一秒的刹车",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "field": "n05",
+            "op": "eq",
+            "value": "A"
+          },
+          {
+            "field": "n04",
+            "op": "eq",
+            "value": "A"
+          },
+          {
+            "field": "n12",
+            "op": "ne",
+            "value": "A"
+          }
+        ]
+      },
+      "narration": "你在首次付款前停下，并通过官方入口核实了赠票规则；但可疑联系没有得到完整报告。及时停手避免了本次资金损失，举报能帮助阻止骗子继续寻找下一个目标。",
+      "next_step": "保留来电、聊天和收款请求记录，通过官方反诈渠道报告。",
+      "reference_score": 91,
+      "priority": 140
+    },
+    {
+      "id": "R03",
+      "title": "128 的山货",
+      "when": {
+        "all": [
+          {
+            "field": "shop_loss",
+            "op": "gte",
+            "value": 128
+          },
+          {
+            "field": "shop_loss",
+            "op": "lt",
+            "value": 316
+          },
+          {
+            "field": "ticket_loss",
+            "op": "lt",
+            "value": 900
+          }
+        ]
+      },
+      "narration": "你为一笔128元的山货订单付款。货物真实送达也不能证明账号属于小岚，更不能证明后续投资承诺可靠。",
+      "next_step": "停止追加交易，保留订单与对话记录，并通过原有可信渠道核实本人。",
+      "reference_score": 76,
+      "priority": 90
+    },
+    {
+      "id": "R04",
+      "title": "900 的补差学费",
+      "when": {
+        "all": [
+          {
+            "field": "ticket_loss",
+            "op": "gte",
+            "value": 900
+          },
+          {
+            "field": "ticket_loss",
+            "op": "lt",
+            "value": 1800
+          },
+          {
+            "field": "shop_loss",
+            "op": "lt",
+            "value": 316
+          }
+        ]
+      },
+      "narration": "票务补差这条线上已模拟转出900元。对方要求“再转一次就退”时，你选择停止；后续付款不会自动追回前款。",
+      "next_step": "停止与对方的资金操作，保存转账凭证，并通过银行和正规渠道处理。",
+      "reference_score": 80,
+      "priority": 80
+    },
+    {
+      "id": "R05",
+      "title": "帮了两次忙",
+      "when": {
+        "all": [
+          {
+            "field": "shop_loss",
+            "op": "gte",
+            "value": 316
+          },
+          {
+            "field": "shop_loss",
+            "op": "lt",
+            "value": 3316
+          },
+          {
+            "field": "ticket_loss",
+            "op": "lt",
+            "value": 1800
+          }
+        ]
+      },
+      "narration": "假小岚的山货与周转交易已造成至少316元模拟损失。前几单发货不能证明后续请求可信；在更高损失阈值前停下，仍需处理已发生的付款。",
+      "next_step": "停止追加付款，整理订单和转账记录，并独立核实小岚本人。",
+      "reference_score": 64,
+      "priority": 70
+    },
+    {
+      "id": "R06",
+      "title": "连环套的半途",
+      "when": {
+        "all": [
+          {
+            "field": "ticket_loss",
+            "op": "gte",
+            "value": 1800
+          },
+          {
+            "field": "ticket_loss",
+            "op": "lt",
+            "value": 3000
+          },
+          {
+            "field": "shop_loss",
+            "op": "lt",
+            "value": 3316
+          }
+        ]
+      },
+      "narration": "票务诈骗这条线上累计模拟损失达到1800元。所谓“没备注”“再转一次就退”没有让前款退回；继续付款只会扩大风险。",
+      "next_step": "停止付款并保留每笔流水，通过银行及正规渠道处理。",
+      "reference_score": 80,
+      "priority": 60
+    },
+    {
+      "id": "R07",
+      "title": "进了货，没了钱",
+      "when": {
+        "all": [
+          {
+            "field": "shop_loss",
+            "op": "gte",
+            "value": 3316
+          },
+          {
+            "field": "shop_loss",
+            "op": "lt",
+            "value": 5000
+          },
+          {
+            "field": "ticket_loss",
+            "op": "lt",
+            "value": 3000
+          }
+        ]
+      },
+      "narration": "假小岚的山货和周转支线累计模拟损失达到3316元，分红承诺没有兑现。真实发货不等于投资真实，物流保证金也不能证明款项安全。",
+      "next_step": "停止追加保证金，保存交易与物流要求记录，并向正规渠道求助。",
+      "reference_score": 59,
+      "priority": 50
+    },
+    {
+      "id": "R08",
+      "title": "补差价补到见底",
+      "when": {
+        "all": [
+          {
+            "field": "ticket_loss",
+            "op": "gte",
+            "value": 3000
+          },
+          {
+            "field": "recovery_loss",
+            "op": "eq",
+            "value": 0
+          }
+        ]
+      },
+      "narration": "票务补差支线累计模拟损失达到3000元，已到本作设定的止损阈值。反复转账没有带来退款；达到阈值后应停止操作并及时求助。",
+      "next_step": "不再向该联系人付款，整理完整流水并通过银行、警方等正规渠道处理。",
+      "reference_score": 74,
+      "priority": 30
+    },
+    {
+      "id": "R09",
+      "title": "帮衬帮到倾家",
+      "when": {
+        "all": [
+          {
+            "field": "shop_loss",
+            "op": "gte",
+            "value": 5000
+          },
+          {
+            "field": "ticket_loss",
+            "op": "lt",
+            "value": 3000
+          }
+        ]
+      },
+      "narration": "假小岚的山货、周转与物流要求累计模拟损失达到5000元。小额真货和熟人关系都不能为投资背书。",
+      "next_step": "停止转账，保存订单、聊天和付款记录，并从独立渠道寻求帮助。",
+      "reference_score": 56,
+      "priority": 40
+    },
+    {
+      "id": "R10",
+      "title": "两头都栽",
+      "when": {
+        "all": [
+          {
+            "field": "ticket_loss",
+            "op": "gte",
+            "value": 3000
+          },
+          {
+            "field": "recovery_loss",
+            "op": "gt",
+            "value": 0
+          }
+        ]
+      },
+      "narration": "票务骗局已造成3000元模拟损失后，又有人以“帮忙追回”为由收取900元。追回承诺本身成为第二次诈骗；不要再向追款联系人付款。",
+      "next_step": "分别保存两次联系和付款记录，向银行及正规反诈渠道说明完整经过。",
+      "reference_score": 68,
+      "priority": 20
+    },
+    {
+      "id": "R11",
+      "title": "信息比钱更值钱",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "any": [
+              {
+                "field": "data_submitted",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "field": "auth_granted",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "narration": "本次没有模拟资金转出，但身份资料与验证码已交给未核实的账号。信息和授权可能被用于后续风险，之后停止联系也不会抹去已经发生的暴露。",
+      "next_step": "按实际暴露内容采取适用的账号保护措施，撤销不必要授权并保留必要证据。",
+      "reference_score": 70,
+      "priority": 100
+    },
+    {
+      "id": "R12",
+      "title": "防住了骗子，也防住了她",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "field": "identity_confirmed",
+            "op": "eq",
+            "value": false
+          },
+          {
+            "any": [
+              {
+                "field": "n12",
+                "op": "eq",
+                "value": "B"
+              },
+              {
+                "field": "n12",
+                "op": "eq",
+                "value": "C"
+              }
+            ]
+          },
+          {
+            "field": "n14",
+            "op": "eq",
+            "value": "C"
+          }
+        ]
+      },
+      "narration": "你没有用共同经历或独立渠道核实联系者，就把自称小岚的账号当成骗子拉黑。后来认出真小岚时，当晚的重逢已经错过。防骗需要核实对象，不是拒绝所有人。",
+      "next_step": "用独立渠道确认身份；对熟人请求，直接联系本人核实。",
+      "reference_score": 88,
+      "priority": 110
+    },
+    {
+      "id": "R13",
+      "title": "错过了演出",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "any": [
+              {
+                "field": "n14",
+                "op": "eq",
+                "value": "B"
+              },
+              {
+                "field": "n14",
+                "op": "eq",
+                "value": "C"
+              }
+            ]
+          }
+        ]
+      },
+      "narration": "资金和资料风险没有扩大，但你选择延后或拒绝当晚赴约，最终错过了这场演出。票仍是真的，错过的时间却无法补回。",
+      "next_step": "下次把必要核实尽早完成，再明确约定时间和地点。",
+      "reference_score": 88,
+      "priority": 130
+    },
+    {
+      "id": "R14",
+      "title": "有些重逢，错过了就真的错过了",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "field": "identity_confirmed",
+            "op": "eq",
+            "value": false
+          },
+          {
+            "field": "contact_closed",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "n12",
+            "op": "eq",
+            "value": "A"
+          }
+        ]
+      },
+      "narration": "你较早识破并报告票务骗局。留言纸随后被归档，真小岚没有再联系上你；你看完了演出，散场后却没有等到重逢。",
+      "next_step": "安全处理之外，也可通过可信渠道留下可联系的方式，给真实关系一次核实机会。",
+      "reference_score": 91,
+      "priority": 120
+    },
+    {
+      "id": "P01",
+      "title": "票是真的，人是真的",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "field": "all_dimensions",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "identity_confirmed",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "n14",
+            "op": "eq",
+            "value": "A"
+          },
+          {
+            "field": "n15",
+            "op": "eq",
+            "value": "A"
+          }
+        ]
+      },
+      "narration": "你通过大剧院官方入口核实赠票和来电，并在收到假小岚的联系后及时核验。可疑请求已留证处理；真小岚从留言纸联系上你，你按约赴演出。",
+      "next_step": "保留自己的核验清单，继续尊重隐私和双方意愿。",
+      "reference_score": 98,
+      "priority": 10
+    },
+    {
+      "id": "P02",
+      "title": "一步没走错",
+      "when": {
+        "all": [
+          {
+            "field": "total_loss",
+            "op": "eq",
+            "value": 0
+          },
+          {
+            "field": "all_dimensions",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "identity_confirmed",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "n14",
+            "op": "eq",
+            "value": "A"
+          },
+          {
+            "field": "n15",
+            "op": "eq",
+            "value": "B"
+          }
+        ]
+      },
+      "narration": "你看到个人收款码后停止转账，通过独立渠道核实票务信息；面对假小岚的推销，也先核实本人。必要记录已整理，脱敏后的核验方法被分享给愿意接收的人。",
+      "next_step": "继续使用官方入口核验，并只分享必要、脱敏且经确认的信息。",
+      "reference_score": 100,
+      "priority": 11
+    }
+  ],
+  "badges": [
+    {
+      "id": "independent_check",
+      "name": "独立核验",
+      "when": {
+        "n04": "A",
+        "n11_seen": true
+      }
+    },
+    {
+      "id": "authorization_guardian",
+      "name": "权限守门人",
+      "when": {
+        "auth_granted": false
+      }
+    },
+    {
+      "id": "timely_brake",
+      "name": "及时刹车",
+      "when": {
+        "n08": "A"
+      }
+    },
+    {
+      "id": "regain_control",
+      "name": "重新掌舵",
+      "when": {
+        "requires_exposure": true,
+        "requires_corresponding_remediation": true
+      }
+    },
+    {
+      "id": "evidence_keeper",
+      "name": "线索保管员",
+      "when": {
+        "n13": "A"
+      }
+    },
+    {
+      "id": "tender_and_firm",
+      "name": "温柔而坚定",
+      "when": {
+        "n14": "recognized_respectful_choice"
+      }
+    },
+    {
+      "id": "safe_carrier",
+      "name": "安全传递者",
+      "when": {
+        "n15": "B"
+      }
+    }
+  ],
+  "witness_paths": [
+    {
+      "ending": "R01",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R02",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R03",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R04",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R05",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "C",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R06",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "B",
+        "A",
+        "B",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R07",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "C",
+        "A",
+        "B",
+        "B",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R08",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "B",
+        "A",
+        "A",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R09",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "C",
+        "A",
+        "B",
+        "B",
+        "C",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R10",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "B",
+        "A",
+        "C",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R11",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "C",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "R12",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "ending": "R13",
+      "choices": [
+        "A",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "C",
+        "B",
+        "B"
+      ]
+    },
+    {
+      "ending": "R14",
+      "choices": [
+        "A",
+        "B",
+        "A",
+        "B",
+        "B",
+        "A",
+        "B",
+        "A",
+        "A",
+        "B",
+        "A",
+        "A",
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "ending": "P01",
+      "choices": [
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A"
+      ]
+    },
+    {
+      "ending": "P02",
+      "choices": [
+        "A",
+        "A",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "implementation_resolutions": [
+    {
+      "id": "O1",
+      "source": "10-08剧情落地实施计划.md 附录B",
+      "scope": "N08 contact_closed variant"
+    },
+    {
+      "id": "O3",
+      "source": "10-08剧情落地实施计划.md 附录B",
+      "scope": "N15 share bonus only after seven dimensions are 2"
+    },
+    {
+      "id": "O6",
+      "source": "10-08剧情落地实施计划.md 附录B",
+      "scope": "N14 undecided maps to B and requires confirmation"
+    },
+    {
+      "id": "O7",
+      "source": "10-08剧情落地实施计划.md 附录B",
+      "scope": "stable option IDs across variants"
+    }
+  ]
+}

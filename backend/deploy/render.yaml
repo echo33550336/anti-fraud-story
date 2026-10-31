@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: anti-scam-coach
+    runtime: python
+    plan: free
+    buildCommand: "true"
+    startCommand: "python app.py"
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
