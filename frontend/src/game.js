@@ -6,9 +6,22 @@ const API_BASE = window.ANTIFRAUD_API_BASE !== undefined
 let sessionId = null;
 let activeNode = null;
 let busy = false;
+let backIndex = 0;
 
 function bg(key) {
-  $('#back').style.backgroundImage = `url("${encodeURI(assets[key] || assets.cover)}")`;
+  const url = `url("${encodeURI(assets[key] || assets.cover)}")`;
+  const first = $('#back');
+  const second = $('#backNext');
+  if (!second) {
+    first.style.backgroundImage = url;
+    return;
+  }
+  const incoming = backIndex === 0 ? second : first;
+  const outgoing = backIndex === 0 ? first : second;
+  incoming.style.backgroundImage = url;
+  incoming.style.opacity = '1';
+  outgoing.style.opacity = '0';
+  backIndex = 1 - backIndex;
 }
 
 function screen(name) {
@@ -58,9 +71,10 @@ function render(node, progress) {
   setText($('#speaker'), node.speaker);
 
   $('#narrative').replaceChildren();
-  (node.text || '').split('\n').forEach(line => {
+  (node.text || '').split('\n').forEach((line, index) => {
     const paragraph = document.createElement('p');
     paragraph.textContent = line;
+    paragraph.style.animationDelay = `${index * 0.06}s`;
     $('#narrative').append(paragraph);
   });
   setText($('#prompt'), node.prompt);
@@ -72,6 +86,13 @@ function render(node, progress) {
   $('#phone').classList.toggle('hidden', !node.phone || node.phone.length === 0);
   $('#phoneBody').replaceChildren();
   (node.phone || []).forEach(addMessage);
+  const phoneBox = $('#phone');
+  phoneBox.classList.remove('shake');
+  if (node.phone && node.phone.length) {
+    void phoneBox.offsetWidth;
+    phoneBox.classList.add('shake');
+    if (window.GameAudio) GameAudio.sfx(node.id === 'N02' ? 'ring' : 'message');
+  }
 
   $('#choices').replaceChildren();
   $('#choices').classList.toggle('hidden', !!node.free);
@@ -92,14 +113,39 @@ function render(node, progress) {
   setBusy(false);
 }
 
+function animateScore(value) {
+  const element = $('#score');
+  const target = Number(value) || 0;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
+    setText(element, target);
+    return;
+  }
+  element.classList.remove('counting');
+  void element.offsetWidth;
+  element.classList.add('counting');
+  const start = performance.now();
+  function frame(now) {
+    const progress = Math.min(1, (now - start) / 800);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    setText(element, Math.round(target * eased));
+    if (progress < 1) requestAnimationFrame(frame);
+    else setText(element, target);
+  }
+  requestAnimationFrame(frame);
+}
+
 function showReview(review) {
   if (!review || !review.ending_id) throw new Error('后端没有返回完整结局复盘');
   activeNode = null;
   screen('end');
   bg('end');
+  if (window.GameAudio) {
+    GameAudio.sfx(['危险', '高风险', '警示'].indexOf(review.rating) !== -1 ? 'bad' : 'good');
+  }
   setText($('#endingTitle'), review.title);
   setText($('#rating'), `${review.ending_id} · ${review.rating}`);
-  setText($('#score'), review.score);
+  animateScore(review.score);
   setText($('#scoreLabel'), ' / 100 · 后端评分');
   setText($('#endingStory'), review.narration);
   setText($('#summary'), review.note);
@@ -116,6 +162,10 @@ function showReview(review) {
 async function startSession() {
   if (busy) return;
   setBusy(true);
+  if (window.GameAudio) {
+    GameAudio.unlock();
+    GameAudio.sfx('click');
+  }
   try {
     const result = await post('/api/story/start', {});
     sessionId = result.session_id;
@@ -129,6 +179,10 @@ async function startSession() {
 async function choose(option) {
   if (busy || !sessionId || !activeNode) return;
   setBusy(true);
+  if (window.GameAudio) {
+    GameAudio.sfx('click');
+    if (/支付|转账|付款|购买/.test(option.text || '')) GameAudio.sfx('pay');
+  }
   try {
     const result = await post('/api/story/answer', {
       session_id: sessionId,
@@ -151,6 +205,7 @@ async function submitFreeAnswer() {
     return;
   }
   setBusy(true);
+  if (window.GameAudio) GameAudio.sfx('click');
   try {
     const result = await post('/api/story/open', {
       session_id: sessionId,
