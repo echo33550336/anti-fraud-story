@@ -1,4 +1,6 @@
-# Anti-Fraud Scenario Trainer | The Ticket Before Curtain
+# 《终场前的一张票》 | Anti-Fraud Scenario Trainer
+
+反诈互动剧情演练：15 个节点、16 个结局。
 
 An interactive, choice-driven anti-fraud exercise. Players encounter ticketing impersonation, a fake familiar contact, and an escalating investment pitch. The backend advances the story from recorded choices and returns a path-based review.
 
