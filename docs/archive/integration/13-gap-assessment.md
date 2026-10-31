@@ -1,5 +1,7 @@
 # 《终场前的一张票》前后端对接差距清单
 
+> 归档审查：本文记录 2026-10-30 的改造前状态。当前实现与 API 以仓库根目录 README 和源码为准。
+
 > 审查对象：
 > - 前端：`前端源码_后端对齐包.zip`（解压到 `_incoming/frontend_fixed/`）
 > - 后端：`反诈-demo-backend.zip`（解压到 `_incoming/backend/反诈陪练-demo-backend/`）

@@ -1,30 +1,30 @@
-﻿# 反诈剧情 Demo Agent
+# 后端
 
-基于虚构故事《终场前的两张票》的确定性反诈演练。当前设计围绕剧情状态、评分和复盘。
+Python 标准库 HTTP API，负责会话、剧情推进、规则计算和结局复盘。
 
-## 当前规格
+## 运行
 
-- 固定 15 个剧情节点、7 个防护维度、16 个结局。
-- N12、N13、N14 接受开放回答；回答映射到固定选项，含义不清时由玩家确认。
-- 已发生的选择和事实由状态记录决定；自述不能改写历史。
-- 七维原始分按权重计算，符合条件的安全分享增加 4 分；最终分映射为 50–100 的整数。
-- 评分表示本次演练完成度，不表示人格、受骗概率或恋爱能力。
-- 剧情和场景事实以 08 文档及其配置为准；开放回答只映射到固定选项，不能改写已记录的事实。
+从仓库根目录启动：
 
-## 主要文件
+```powershell
+cd backend
+python app.py
+```
 
-- 08-完整15步剧情与16结局.md：剧情、状态、评分、路由和复盘规则。
-- 10-08剧情落地实施计划.md：实施顺序与验收要求。
-- app.py：HTTP 服务与剧情 API 路由。
-- game/config/story_15nodes.json：当前剧情配置。
-- game/engine.py：节点解析、状态效果、维度、评分、结局与复盘。
-- game/schemas.py：剧情配置校验。
-- scripts/validate_config.py：配置和见证路径校验。
+默认监听 `http://127.0.0.1:5000`。本地 CORS 允许 `localhost`、`127.0.0.1` 和 `::1` 来源。
 
-## 实现状态
+## 结构
 
-评分映射、参考分和校验器已同步为整数。R12 参考分按见证路径复算为 95。
+```text
+app.py                                HTTP 路由与 CORS/OPTIONS
+game/sessions.py                      会话、选项提交、自由回答和复盘
+game/engine.py                        图推进、条件分支、评分和徽章
+game/config/story_frontend_graph.json 当前前端剧情图
+game/config/story_15nodes.json        旧版线性模型配置
+game/schemas.py                       两种配置结构校验
+deploy/                               部署样例
+```
 
-已完成的核验：语法与导入检查通过；配置校验遍历 248,832 条封闭路径、覆盖 16 个结局和见证路径；本机 HTTP 流程覆盖 15 步 P02、N12–N14 开放回答确认、复盘和中途停止；直接评分边界检查确认最低 50、分享奖励满分 100。
+当前会话保存在单进程内存，空闲 2 小时后过期，服务重启后不会保留。`story_15nodes.json` 是旧模型配置；相关旧文档归档在 [`docs/archive/backend`](../docs/archive/backend/)。当前会话流程使用前端图配置。
 
-服务仅提供剧情 API，不提供前端页面，也不调用外部模型。Docker 镜像尚未构建或运行验证。
+API：`POST /api/story/start`、`POST /api/story/answer`、`POST /api/story/open`；并提供 `GET /api/story/state`、`GET /api/story/review` 和 `POST /api/story/stop`。
