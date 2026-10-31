@@ -1,0 +1,6 @@
+.git
+.gitignore
+docs
+*.zip
+__pycache__
+*.pyc

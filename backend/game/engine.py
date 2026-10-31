@@ -6,6 +6,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional
 
 from .config_loader import load_config
+from .scoring import (
+    compute_dimension_score,
+    compute_frontend_score,
+    total_paid,
+)
 
 DIMENSION_ORDER = (
     "funds",
@@ -134,16 +139,12 @@ def build_frontend_review(
     ending = next((item for item in config["endings"] if item["id"] == ending_id), None)
     if ending is None:
         raise ValueError("unknown frontend ending: %s" % ending_id)
-    scoring = config["scoring"]
-    paid = sum(flags.get(key, 0) for key in scoring["payment_fields"])
-    # Match JavaScript Math.round for the non-negative payment totals used here.
-    score = 100 - min(scoring["max_payment_deduction"], (paid + 50) // 100)
-    score -= scoring["ending_penalties"].get(ending_id, 0)
-    score = max(score, scoring["minimum_score_by_ending"].get(ending_id, scoring["score_min"]))
-    score = max(scoring["score_min"], min(scoring["score_max"], score))
+    scoring_spec = config["scoring"]
+    paid = total_paid(flags, scoring_spec["payment_fields"])
+    score = compute_frontend_score(flags, ending_id, scoring_spec)
 
     badges = []
-    for badge in scoring["badges"]:
+    for badge in scoring_spec["badges"]:
         earned = any(flags.get(key, False) for key in badge.get("any_flags", []))
         earned = earned or ending_id in badge.get("any_endings", [])
         earned = earned or any(flags.get(key, 0) > 0 for key in badge.get("any_paid_fields", []))
@@ -157,7 +158,7 @@ def build_frontend_review(
         "note": ending["note"],
         "score": score,
         "badges": badges,
-        "paid": {key: flags.get(key, 0) for key in scoring["payment_fields"]},
+        "paid": {key: flags.get(key, 0) for key in scoring_spec["payment_fields"]},
         "total_paid": paid,
         "history": [dict(item) for item in history],
     }
@@ -387,30 +388,9 @@ def compute_score(
 ) -> int:
     """Return the weighted completion score mapped to an integer from 50 to 100."""
     current = _get_config(config)
-    if n15 not in ("A", "B"):
-        raise ValueError("completed story requires an N15 choice")
-    if set(dimensions.keys()) != set(DIMENSION_ORDER):
-        raise ValueError("dimensions must contain exactly the seven 08 dimensions")
-
-    score_spec = current["meta"]["score"]
-    weights = score_spec["weights"]
-    weighted_sum = 0
-    for name in DIMENSION_ORDER:
-        level = dimensions[name]
-        if isinstance(level, bool) or not isinstance(level, int) or level not in (0, 1, 2):
-            raise ValueError("dimension levels must be integer values from 0 to 2")
-        weighted_sum += weights[name] * level
-
-    denominator = int(score_spec["denominator"])
-    if denominator <= 0:
-        raise ValueError("score denominator must be positive")
-    raw_numerator = int(score_spec["base"]) * weighted_sum
-    all_protected = all(dimensions[name] == 2 for name in DIMENSION_ORDER)
-    if all_protected and n15 == "B":
-        raw_numerator += int(score_spec["share_bonus"]) * denominator
-
-    # final = round_half_up(50 + raw_score / 2), using integer arithmetic.
-    return 50 + (raw_numerator + denominator) // (2 * denominator)
+    return compute_dimension_score(
+        dimensions, n15, current["meta"]["score"], DIMENSION_ORDER
+    )
 
 
 def _ending_condition_value(

@@ -1,57 +1,57 @@
-# 反诈陪练｜终场前的一张票
+# Anti-Fraud Scenario Trainer | The Ticket Before Curtain
 
-一款由剧情选择驱动的反诈互动演练。玩家经历票务冒充、熟人账号仿冒和投资诱导，在关键节点练习核实来源、拒绝转账、保存证据与寻求帮助。后端按会话中的实际选择推进剧情并生成复盘。
+An interactive, choice-driven anti-fraud exercise. Players encounter ticketing impersonation, a fake familiar contact, and an escalating investment pitch. The backend advances the story from recorded choices and returns a path-based review.
 
-> **模拟演练：**所有付款均为虚构，不连接真实支付渠道。自由回答使用配置关键词匹配，不使用生成式 AI。
+> **Simulation only:** All payments are fictional. No real payment service is connected. Free-text answers are matched with configured keywords; the project does not use generative AI to interpret them.
 
-## 项目特色
+## What makes it distinctive
 
-- **双重骗局连续演练：**从假票务个人收款码和重复转账，走到假熟人小额交易、投资与追加费用。
-- **路径决定结局：**15 个剧情节点、16 个结局；E15/E16 会根据此前核实和付款记录分流。
-- **服务端负责复盘：**后端保存选项与模拟付款事实，计算评分和徽章，并返回对应结局说明。
-- **练习可执行的处置：**独立核实、及时停止、整理必要证据、联系正规渠道及脱敏提醒。
+- **Two connected scam patterns:** A fake ticketing fee and repeated-transfer pressure lead into small purchases from an impersonated friend and a larger investment request.
+- **Choices shape the ending:** The story has 15 nodes and 16 endings. E15 and E16 depend on earlier verification and payment events.
+- **Server-side review:** The backend records choices and simulated payment amounts, then calculates the score and badges and returns the matching ending.
+- **Practical response skills:** Players practice independent verification, stopping further payments, preserving relevant evidence, contacting official channels, and sharing privacy-aware warnings.
 
-## 技术栈
+## Tech stack
 
-| 层 | 实现 |
+| Layer | Implementation |
 |---|---|
-| 前端 | HTML、CSS、原生 JavaScript，无构建步骤 |
-| API | Python 标准库 `http.server` |
-| 剧情引擎 | JSON 图配置、确定性条件路由、关键词规则 |
-| 会话 | 服务端进程内存储，空闲 2 小时过期 |
+| Frontend | HTML, CSS, vanilla JavaScript; no build step |
+| API | Python standard library `http.server` |
+| Story engine | JSON graph configuration, deterministic conditional routing, keyword rules |
+| Sessions | In-memory server-side state with a two-hour idle timeout |
 
-项目没有第三方 Python 依赖。会话不写入数据库；服务重启后会丢失，当前设计适用于本地演示和单进程运行。
+There are no third-party Python dependencies. Sessions are not stored in a database and are lost when the server restarts, so the current setup is intended for local demos and single-process use.
 
-## 快速运行
+## Run locally
 
-在仓库根目录打开两个 PowerShell 窗口。
-
-**后端：**
+One process serves both the API and the page:
 
 ```powershell
 cd backend
 python app.py
 ```
 
-**前端：**
+Open <http://127.0.0.1:5000/>. The frontend is served from `../frontend/`; the API lives under `/api/story/*`.
+
+For frontend-only iteration, start a static server instead and the page falls back to `http://localhost:5000` for the API:
 
 ```powershell
 cd frontend
 python -m http.server 8080 --bind 127.0.0.1
 ```
 
-浏览器打开 <http://localhost:8080>。前端默认调用 `http://localhost:5000`。后端 CORS 当前仅允许 loopback 开发来源。
+CORS currently allows loopback development origins only.
 
-## 仓库导航
+## Repository map
 
 ```text
-backend/   API、会话、剧情引擎、配置与部署文件
-frontend/  页面、交互代码、样式和美术资源
-docs/      阅读导航、剧情设计及归档分析资料
+backend/   API, sessions, story engine, configuration, and deployment files
+frontend/  page, interaction code, styles, and artwork
+docs/      documentation index, story design, and archived analysis
 ```
 
-- [后端说明](backend/README.md) · [前端说明](frontend/README.md)
-- [文档索引](docs/README.md) · [剧情节点设计](docs/story/15-node-16-ending-design.md)
-- [历史差距审查](docs/archive/integration/13-gap-assessment.md) · [历史改造建议](docs/archive/integration/14-backend-alignment-plan.md)
+- [Backend guide](backend/README.md) · [Frontend guide](frontend/README.md)
+- [Documentation index](docs/README.md) · [Story design](docs/story/15-node-16-ending-design.md)
+- [Archived gap assessment](docs/archive/integration/13-gap-assessment.md) · [Archived alignment plan](docs/archive/integration/14-backend-alignment-plan.md)
 
-`docs/archive/` 中的文件记录早期模型和改造过程；当前接口与行为以源码及本 README 为准。
+Files under `docs/archive/` preserve earlier models and planning notes. The source code and this README describe the current implementation.

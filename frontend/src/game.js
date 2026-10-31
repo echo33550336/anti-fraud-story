@@ -1,5 +1,8 @@
 const $ = selector => document.querySelector(selector);
-const API_BASE = window.ANTIFRAUD_API_BASE || 'http://localhost:5000';
+// 同源部署（后端同时托管 frontend/）时用相对路径；本地分开调试（静态服务 8080）时回落到 5000。
+const API_BASE = window.ANTIFRAUD_API_BASE !== undefined
+  ? window.ANTIFRAUD_API_BASE
+  : (location.port === '8080' ? 'http://localhost:5000' : '');
 let sessionId = null;
 let activeNode = null;
 let busy = false;

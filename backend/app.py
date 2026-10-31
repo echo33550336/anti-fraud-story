@@ -1,25 +1,28 @@
-"""15 步反诈剧情 Demo 的标准库 HTTP 服务。
+"""反诈剧情演练的标准库 HTTP 服务。
 
 启动：python app.py
 默认地址：http://127.0.0.1:5000
 
-服务提供剧情 API；剧情状态与评分由 game 模块确定性处理。
+同一个进程同时提供剧情 API 和 frontend/ 静态页面，部署时只需要一个服务。
 """
 
 from __future__ import annotations
 
 import json
+import mimetypes
 import os
 import sys
 import threading
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from typing import Any
 
 HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "5000"))
 # 公网部署（Docker / Render / 隧道）时 HOST 为 0.0.0.0，此时放开 Host 校验
 PUBLIC = HOST not in ("127.0.0.1", "localhost") or os.getenv("ALLOW_PUBLIC") == "1"
+FRONTEND_ROOT = (Path(__file__).resolve().parents[1] / "frontend").resolve()
 
 
 def log(msg: str) -> None:
@@ -72,6 +75,27 @@ class Handler(BaseHTTPRequestHandler):
         host = (self.headers.get("Host") or "").split(":")[0].lower()
         return host in ("127.0.0.1", "localhost", "")
 
+    def _handle_frontend(self, path: str) -> bool:
+        """Serve a file from ``frontend/``; return False when it is not found."""
+        from urllib.parse import unquote
+
+        relative = "index.html" if path in ("", "/") else unquote(path.lstrip("/"))
+        try:
+            target = (FRONTEND_ROOT / relative).resolve()
+            if target != FRONTEND_ROOT and FRONTEND_ROOT not in target.parents:
+                return False
+            if not target.is_file():
+                return False
+            content_type = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+            if content_type.startswith("text/") or content_type in (
+                "application/javascript", "application/json", "image/svg+xml"
+            ):
+                content_type += "; charset=utf-8"
+            self._send(200, target.read_bytes(), content_type)
+            return True
+        except (OSError, ValueError):
+            return False
+
     # ---------- 路由 ----------
     def do_OPTIONS(self) -> None:  # noqa: N802
         if not self._host_ok():
@@ -91,15 +115,15 @@ class Handler(BaseHTTPRequestHandler):
             self._json(403, {"error": "Local access only"})
             return
         path = self.path.split("?")[0]
-        if path == "/":
-            self._json(200, {"ok": True, "service": "story-agent", "api": "/api/story"})
-        elif path == "/api/health":
+        if path == "/api/health":
             self._json(200, {"ok": True, "service": "story-agent"})
         elif path in ("/api/story/state", "/api/story/review"):
             self._handle_story_get(path)
         elif path == "/favicon.ico":
             self._send(204, b"", "image/x-icon")
-        else:
+        elif path.startswith("/api/"):
+            self._json(404, {"error": "Not Found"})
+        elif not self._handle_frontend(path):
             self._json(404, {"error": "Not Found"})
 
     def do_POST(self) -> None:  # noqa: N802

@@ -181,7 +181,15 @@
           "text": "拒绝向个人收款码付款，独立核实",
           "target": "E02",
           "increments": {},
-          "flags": {}
+          "flags": {},
+          "conditional_targets": [
+            {
+              "when": {
+                "verified_official": true
+              },
+              "target": "N07"
+            }
+          ]
         }
       ],
       "ui_option_order": [
@@ -563,7 +571,9 @@
           "id": "A",
           "text": "继续模拟付款，累计达到5000元",
           "target": "E10",
-          "increments": {},
+          "increments": {
+            "invest_paid": 1684
+          },
           "flags": {},
           "conditional_targets": [
             {
